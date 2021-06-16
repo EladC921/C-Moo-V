@@ -33,14 +33,18 @@
             background-size: cover;
             transition: all 0.2s ease-in-out !important;
             border-radius: 24px;
-            &:hover
+           
+        }
 
-        {
+        hover {
             transform: translateY(-5px);
             box-shadow: none;
         }
-
+        #pic {
+            width:20px;
+            height:25px;
         }
+       
 
      
 
@@ -148,7 +152,7 @@
             tvId = tv.results[0].id;
             tv_poster_path = tv.results[0].poster_path;
             let poster = imagePath + tv_poster_path;
-            let str = "<img src='" + poster + "' /> ";
+            let pic = "<img src='" + poster + "' /> ";
 
             //get tv Series object details for later insert to Series Object
             tvName = tv.results[0].name;
@@ -172,10 +176,10 @@
 
 
             //add image to html
-            $("#ph").html(str);
+          $("#pic").html(pic);
             let method = "3/tv/";
 
-            $("#ph").append("<div id = seasonDiv></div>")
+          //  $("#ph").append('<div class="col-5" id = "seasonDiv"></div>');
 
             i = 1; //global index to recieve the season number
             apiCall = url + method + tvId + "/season/";
@@ -193,7 +197,7 @@
             let overview = "<p>" + season.overview + "</p>";
             let name = "<h3>" + season.name + "</h3>";
 
-            $("#seasonDiv").append("<div id=" + season.id + " onclick='generateEps(this.id)'>" + name + str + overview + "</div>");
+            $("#ph").append("<div class='col-5'>"+"<div class='card card - block ' id=" + season.id + " onclick='generateEps(this.id)'>" + name + str + overview + "</div></div>");
 
             console.log(season);
             i++;
@@ -234,7 +238,7 @@
             let airDate = "<b>Air Date: " + episode.air_date + "</b></br>";
             let button = "<button value=" + episode.episode_number + " onclick='insert(this.value)'>Insert</button>"
 
-            $("#seasonDiv").append("<div>" + name + str + overview + airDate + button + "</div>");
+            $("#ph1").append("<div>" + name + str + overview + airDate + button + "</div>");
 
             j++;
             ajaxCall("GET", apiCallEp + j + "?" + api_key, "", getEpisodeSuccessCB, getEpisodeErrorCB);
@@ -348,45 +352,27 @@
 
 
     </div>
-    <div class="container-fluid">
-     
-       
-        <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
+    <div class="container">
 
-            <div class="col-5">
-                <div class="card card-block card-1"></div>
-            </div>
-            <div class="col-5">
-                <div class="card card-block card-2"></div>
-            </div>
-            <div class="col-5">
-                <div class="card card-block card-3"></div>
-            </div>
-            <div class="col-5">
-                <div class="card card-block card-4"></div>
-            </div>
-            <div class="col-5">
-                <div class="card card-block card-5"></div>
-            </div>
-            <div class="col-5">
-                <div class="card card-block card-6"></div>
-            </div>
-            <div class="col-5">
-                <div class="card card-block card-7"></div>
-            </div>
-            <div class="col-5">
-                <div class="card card-block card-8"></div>
-            </div>
-            <div class="col-5">
-                <div class="card card-block card-9"></div>
-            </div>
-            <div class="col-5">
-                <div class="card card-block card-10"></div>
-            </div>
+        <div id="pic">
+            <br />
+
+        </div>
+        <div id="ph" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
+
+
+
+
+        </div>
+        <div id="ph1" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
+
+
+
+
         </div>
     </div>
-    <div id="ph">
-    </div>
+    
+
 
 
 </body>
