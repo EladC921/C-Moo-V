@@ -328,6 +328,54 @@ namespace WebApplication1.Models.DAL
             }
 
         }
+
+
+        public List<Preference> GetTotalPref(string type)
+        {
+
+            SqlConnection con = null;
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+                String selectSTR = "";
+                selectSTR = (string.Equals(type, "Episodes")) ?
+                      "SELECT S.name 'Series Name', E.name 'Episode Name', COUNT(P.id_user) 'num of users' FROM Series_2021 S inner join Episodes_2021 E on E.id_ser = S.id inner join Preferences_2021 P on E.id = P.id_ep GROUP BY S.name, E.name Order BY[num of users] DESC" :
+                      "SELECT S.name 'Series Name', COUNT(P.id_user) 'num of users' FROM Series_2021 S inner join Episodes_2021 E on E.id_ser = S.id inner join Preferences_2021 P on E.id = P.id_ep GROUP BY S.name Order BY[num of users] DESC";
+                 
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+                List<Preference> prefList = new List<Preference>();
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    Preference p = new Preference();
+                    p.SerName = (string)(dr["Series Name"]);
+                    if (string.Equals(type, "Episodes"))
+                        p.EpName = (string)(dr["Episode Name"]);
+                    p.NumOfUsers = (int)(dr["num of users"]);
+
+                    prefList.Add(p);
+                }
+
+                return prefList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+
+            }
+
+        }
     }
 
 }

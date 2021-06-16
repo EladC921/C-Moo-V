@@ -20,14 +20,29 @@
             text-align: left;
         }
 
-        #userTbl, #epTbl {
+        #userTbl, #epTbl, #serTbl {
             margin-left: 10px;
             margin-right: 10px;
+   
         }
-         
+
+        #usersTable, #epTable, #serTable {
+            border: solid 1px black;
+        }
 
         #usersData {
             padding-top: 5px;
+        }
+
+        #epTbl, #serTbl {
+            width: 50%;
+            float: left;
+        }
+
+        .block {
+            float: left;
+            width: 100%;
+            display: flex;
         }
     </style>
 
@@ -51,7 +66,8 @@
             userTbl = "";
             epTbl = "";
             loadUserTable();
-            //loadEpTable();
+            loadEpTable();
+            loadSerTable();
 
         })
 
@@ -63,8 +79,14 @@
 
         //AJAX to load episodes table
         function loadEpTable() {
-            let api = "../api/Episode";
+            let api = "../api/Preferences?type=Episodes";
             ajaxCall("GET", api, "", getEpSuccessCB, error);
+        }
+
+        //AJAX to load seriess table
+        function loadSerTable() {
+            let api = "../api/Preferences?type=Series";
+            ajaxCall("GET", api, "", getSerSuccessCB, error);
         }
 
         //Global Error function
@@ -99,22 +121,18 @@
                 alert(err);
             }
         }
-        //this link
+
         //Get Episode List Success
         function getEpSuccessCB(epList) {
             console.log(epList);
             try {
-                userTbl = $('#epTable').DataTable({
-                    data: userList,
+                epTbl = $('#epTable').DataTable({
+                    data: epList,
                     pageLength: 5,
                     columns: [
-                        { data: "Id" },
-                        { data: "Id_ser" },
-                        { data: "EpName" },
                         { data: "SerName" },
-                        { data: "SeasonNum" },
-                        { data: "Img" },
-                        { data: "Description" }
+                        { data: "EpName" },
+                        { data: "NumOfUsers" },
                     ],
                 });
             }
@@ -122,6 +140,25 @@
                 alert(err);
             }
         }
+
+        //Get Series List Success
+        function getSerSuccessCB(serList) {
+            console.log(serList);
+            try {
+                serTbl = $('#serTable').DataTable({
+                    data: serList,
+                    pageLength: 5,
+                    columns: [
+                        { data: "SerName" },
+                        { data: "NumOfUsers" },
+                    ],
+                });
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+
 
     </script>
 </head>
@@ -138,34 +175,44 @@
                 <tr>
                     <th>Id</th>
                     <th>Name</th>
-                    <th>SerName</th>
+                    <th>Sername</th>
                     <th>Email</th>
                     <th>Password</th>
                     <th>Phone</th>
                     <th>Gender</th>
-                    <th>BirthYear</th>
-                    <th>FavGenre</th>
-                    <th>Adress</th>
+                    <th>Birth Year</th>
+                    <th>Favorite Genre</th>
+                    <th>Address</th>
                 </tr>
             </thead>
         </table>
     </div>
-    <!-- EPISODES TABLE -->
-    <div id="epTbl">
-        <h2 id="epData">Episodes Data</h2>
-        <table id="usersTable" class="display nowrap" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Episode Id</th>
-                    <th>Series Id</th>
-                    <th>Episode Name</th>
-                    <th>Series Name</th>
-                    <th>Season Number</th>
-                    <th>Image</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-        </table>
+    <div class="block">
+        <!-- EPISODES TABLE -->
+        <div id="epTbl">
+            <h2 id="epData">Episodes Data</h2>
+            <table id="epTable" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Series Name</th>
+                        <th>Episode Name</th>
+                        <th>Amount of Users that likes the Episode</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- Series TABLE -->
+        <div id="serTbl">
+            <h2 id="serData">Series Data</h2>
+            <table id="serTable" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Series Name</th>
+                        <th>Amount of Users that likes the Episode</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </body>
 </html>

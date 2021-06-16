@@ -156,6 +156,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PreferencesController.cs" />
     <Compile Include="Controllers\SeriesController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Controllers\EpisodesController.cs" />
     <Compile Include="Models\DAL\DataServices.cs" />
     <Compile Include="Models\Episode.cs" />
+    <Compile Include="Models\Preference.cs" />
     <Compile Include="Models\Serie.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

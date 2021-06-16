@@ -79,3 +79,4 @@ C:\Back End\Git SemiFinals\Semi-Finals-Exam\WebApplication1\obj\Debug\WebApplica
 C:\Back End\Git SemiFinals\Semi-Finals-Exam\WebApplication1\obj\Debug\WebApplication1.csproj.CopyComplete
 C:\Back End\Git SemiFinals\Semi-Finals-Exam\WebApplication1\obj\Debug\WebApplication1.dll
 C:\Back End\Git SemiFinals\Semi-Finals-Exam\WebApplication1\obj\Debug\WebApplication1.pdb
+C:\Back End\Git SemiFinals\Semi-Finals-Exam\WebApplication1\bin\WebApplication1.dll.config
