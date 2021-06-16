@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <style>
+        #welcome {
+            color: red;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding-left: 5px;
+            font-size: 15px;
+        }
+
+        #logout {
+        }
+
+        #buttons {
+            margin: 10px;
+            text-align: left;
+        }
+
+        #userTbl, #epTbl {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+         
+
+        #usersData {
+            padding-top: 5px;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="../scripts/ajaxCalls.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#logout").click(function () {
+                localStorage.clear();
+                window.location.href = "homePage.html";
+            })
+            userTbl = "";
+            epTbl = "";
+            loadUserTable();
+            //loadEpTable();
+
+        })
+
+        //AJAX to load users table
+        function loadUserTable() {
+            let api = "../api/Users";
+            ajaxCall("GET", api, "", getUserSuccessCB, error);
+        }
+
+        //AJAX to load episodes table
+        function loadEpTable() {
+            let api = "../api/Episode";
+            ajaxCall("GET", api, "", getEpSuccessCB, error);
+        }
+
+        //Global Error function
+        function error(err) {
+            console.log(err);
+        }
+
+        //Get Users List Success
+        function getUserSuccessCB(userList) {
+            console.log(userList);
+
+            try {
+                userTbl = $('#usersTable').DataTable({
+                    data: userList,
+                    pageLength: 5,
+                    columns: [
+
+                        { data: "Id" },
+                        { data: "Name" },
+                        { data: "Sername" },
+                        { data: "Mail" },
+                        { data: "Pass" },
+                        { data: "Phone" },
+                        { data: "Gender" },
+                        { data: "BirthYear" },
+                        { data: "FavGenre" },
+                        { data: "Address" },
+                    ],
+                });
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+
+        //Get Episode List Success
+        function getEpSuccessCB(epList) {
+            console.log(epList);
+            try {
+                userTbl = $('#epTable').DataTable({
+                    data: userList,
+                    pageLength: 5,
+                    columns: [
+                        { data: "Id" },
+                        { data: "Id_ser" },
+                        { data: "EpName" },
+                        { data: "SerName" },
+                        { data: "SeasonNum" },
+                        { data: "Img" },
+                        { data: "Description" }
+                    ],
+                });
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <div id="buttons">
+        <button id="logout">Logout</button>
+        <p id="welcome">Hello Admin</p>
+    </div>
+    <!-- USERS TABLE -->
+    <div id="userTbl">
+        <h2 id="usersData">Users Data</h2>
+        <table id="usersTable" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>SerName</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>BirthYear</th>
+                    <th>FavGenre</th>
+                    <th>Adress</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <!-- EPISODES TABLE -->
+    <div id="epTbl">
+        <h2 id="epData">Episodes Data</h2>
+        <table id="usersTable" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Episode Id</th>
+                    <th>Series Id</th>
+                    <th>Episode Name</th>
+                    <th>Series Name</th>
+                    <th>Season Number</th>
+                    <th>Image</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</body>
+</html>

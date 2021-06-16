@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<orders year="2021" >
+  <order>1</order>
+  <books>
+    <Book>
+      <numOfCopies val="20">
+       <url>google.com</url>
+         <printSize>A4</printSize>
+           <coverType>Solid</coverType>
+              <Costumer>
+                <Costumer name="bibi">
+                  <address>haifa</address>
+                </Costumer>
+              </Costumer>
+        </numOfCopies>
+    </Book> 
+  
+    <Book>
+      <numOfCopies val="10">
+       <url>goosdle.com</url>
+         <printSize>A3</printSize>
+           <coverType>Solid</coverType>
+              <Costumer>
+                <Costumer name="bisi">
+                  <address>tlv</address>
+                </Costumer>
+              </Costumer>
+        </numOfCopies>
+    </Book>
+    </books>
+ </orders>

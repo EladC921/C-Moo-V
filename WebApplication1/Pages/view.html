@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title> </title>
+
+    <style type="text/css">
+        #ph > img {
+            height: 300px;
+        }
+
+        .epsOpt {
+            border: black 1px solid;
+            font-size: 1rem;
+            padding: 5px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous">
+    </script>
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            getEpisodes();
+        })
+
+        //call function to episodes list
+        function getEpisodes() {
+            let api = "../api/Series?uId=" + JSON.parse(localStorage.getItem("user")).Id;
+            ajaxCall("GET", api,"", getSerSuccessCB, getSerErrorCB)
+        }
+
+        //get episodes - SUCCESS
+        function getSerSuccessCB(seriesList) {
+            let scroll = "";
+            for (var i = 0; i < seriesList.length; i++) {
+                scroll += "<option value='" + seriesList[i].Id + "'>" + seriesList[i].Name + "</option>";
+            }
+            $("#ser").append(scroll);
+        }
+
+        function getSerErrorCB(err) {
+            console.log(err);
+        }
+        //get episodes - ERROR
+        function getEpisodesErrorCB(err) {
+            console.log(err);
+        }
+        
+
+        //call function to ajax call of filtered list
+        function renderEpsBySer(opt) {
+            console.log(opt);
+            let api = "../api/Episodes?uId=" + JSON.parse(localStorage.getItem("user")).Id + "&sId=" + opt;
+            ajaxCall("GET", api, "", getEpisodesBySerSuccessCB, getEpisodesBySerErrorCB)
+        }
+
+        //Filtered list of episodes by series name - Success
+        function getEpisodesBySerSuccessCB(eps) {
+            let str = "";
+            for (var i = 0; i < eps.length; i++) {
+                str += "<div class='epsOpt'><p><b>Series Name:</b> " + eps[i].SerName + "</p>";
+                str += "<p><b>Episode Name:</b> " + eps[i].EpName + "</p>";
+                str += "<p><b>Season Number:</b> " + eps[i].SeasonNum + "</p>";
+                str += "<image src=" + eps[i].Img + ">";
+                str += "<p><b>Description:</b> " + eps[i].Description + "</p></div>";
+            }
+            
+            $("#ph").html(str);
+        }
+
+        //Filtered list of episodes by series name - ERROR
+        function getEpisodesBySerErrorCB(err) {
+            console.log(err);
+        }
+
+    </script>
+</head>
+<body>
+    <div id="ph0">
+        <label>Your Series</label>
+        <select name="ser" id="ser" onchange="renderEpsBySer(this.value)">
+            <option value="choose">Choose</option>
+        </select>
+    </div>
+    <div id="ph">
+    </div>
+</body>
+</html>
