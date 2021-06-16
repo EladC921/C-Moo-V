@@ -5,23 +5,88 @@
     <title></title>
 
     <style type="text/css">
+        .scrolling-wrapper {
+            overflow-x: auto;
+        }
+
+        body {
+            background-color: black;
+            color: #fff;
+            font-family: 'system-ui';
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 3em;
+        }
+
+        .subtitle {
+            font-size: 1.25em;
+            opacity: 0.65;
+        }
+
+        .card-block {
+            height: 250px;
+            background-color: #fff;
+            border: none;
+            background-position: center;
+            background-size: cover;
+            transition: all 0.2s ease-in-out !important;
+            border-radius: 24px;
+            &:hover
+
+        {
+            transform: translateY(-5px);
+            box-shadow: none;
+        }
+
+        }
+
+     
+
+    
+
         #ph > img {
             height: 300px;
         }
 
+        html, body {
+            background-image: url('https://images.freecreatives.com/wp-content/uploads/2016/04/Solid-Colors-Wallpaper-Background-.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 100%;
+            font-family: 'Numans', sans-serif;
+        }
 
         #seasonDiv img {
             height: 200px;
         }
 
+        #custom-search-input {
+            margin-top: 25px;
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+
+        .container {
+        }
+
+        .card-block {
+            min-height: 220px;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
             crossorigin="anonymous">
     </script>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="../Scripts/ajaxCalls.js"></script>
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
     <script>
 
@@ -32,7 +97,8 @@
             if (localStorage.user != null) { //if user already logged in, details saved -> auto-login
                 user = JSON.parse(localStorage.user);
                 console.log(user);
-                alert("Hello " + user.Name + " " + user.Sername);
+                startUp(user);
+                //  alert("Hello " + user.Name + " " + user.Sername);
             }
             //linkssssss
             //logout -> clear localStorage and return to homepage
@@ -56,7 +122,12 @@
                 window.location.href = "view.html";
             })
         });
-
+        function startUp(user) {
+            console.log(user);
+            let str = "";
+            str += '<li class="active"><a >' + "Hello" + " " + user.Name + " " + user.Sername + '</a></li>'
+            document.getElementById("theHead").innerHTML += str
+        }
         function getTV() {
 
             let name = $("#tvShowName").val();
@@ -70,8 +141,8 @@
 
         // TV Success
 
-        function getTVSuccessCB(tv) { 
-            
+        function getTVSuccessCB(tv) {
+
 
             console.log(tv);
             tvId = tv.results[0].id;
@@ -116,6 +187,7 @@
         // Season Success
         function getSeasonSuccessCB(season) {
             seasons[season.id] = season; //create a JSON of seasons - search by key which is the season ID
+            console.log(seasons[season.id])
             let poster = imagePath + season.poster_path;
             let str = "<img src='" + poster + "' /> ";
             let overview = "<p>" + season.overview + "</p>";
@@ -140,7 +212,7 @@
 
         }
 
-        
+
         //Season Error
         function getSeasonErrorCB(err) {
             console.log(err);
@@ -150,7 +222,7 @@
         function getTVErrorCB(err) {
             console.log(err);
         }
-        
+
         //Episode Success
         function getEpisodeSuccessCB(episode) {
             console.log(episode);
@@ -179,18 +251,18 @@
 
             console.log(value);
             value = value - 1;
-           console.log(seasons[season_id].episodes[value])
+            console.log(seasons[season_id].episodes[value])
 
 
             console.log("-------------------------");
-            console.log(ser); 
+            console.log(ser);
 
             //Creation of episode object
             ep = {
                 Id: seasons[season_id].episodes[value].id,
                 Id_user: user.Id,
                 EpName: seasons[season_id].episodes[value].name,
-                Id_ser: tvId, 
+                Id_ser: tvId,
                 SerName: tvName,
                 SeasonNum: seasons[season_id].season_number,
                 Img: imagePath + seasons[season_id].episodes[value].still_path,
@@ -200,13 +272,13 @@
             console.log("-------------------------");
             console.log(ep);
 
-            
+
 
             console.log("====================================")
             console.log(ser)
             //POST series object
             let apiSeries = "../api/Series";
-            ajaxCall("POST", apiSeries, JSON.stringify(ser) , postSeriesSuccessCB, postSeriesErrorCB);
+            ajaxCall("POST", apiSeries, JSON.stringify(ser), postSeriesSuccessCB, postSeriesErrorCB);
 
         }
 
@@ -226,16 +298,16 @@
         //Post Episode Success
         function postEpsSuccessCB(msg) {
             if (msg == -1)
-                  console.log("episode already exists in sql table therefore wasn't added once again")
-                alert("Episode inserted");
-            
+                console.log("episode already exists in sql table therefore wasn't added once again")
+            alert("Episode inserted");
+
 
         }
-        
+
 
         //Post Episode Error
         function postEpsErrorCB(err) {
-        alert(err);
+            alert(err);
         }
 
         //Post Preferences Success
@@ -252,13 +324,67 @@
 
 </head>
 <body>
+    <!--Navbar-->
+    <ul class="nav nav-pills" id="theHead">
+        <li class="active"><a id="logout" style="background-color:red" href="#">Logout</a></li>
+        <li class="active" id="view"><a href="#">View my episodes</a></li>
+    </ul>
 
-    <button id="logout">Logout</button><br/>
-    <hr />
-    <h2>Search a TV show</h2>
-    <input type="text" id="tvShowName" />
-    <button id="getTV">Get TV Show</button>
-    <button id="view">View My Episodes</button>
+
+    <div class="container d-flex align-items-center flex-column">
+
+
+
+        <div id="custom-search-input">
+            <div class="input-group col-md-12 justify-content-center ">
+                <input type="text" id="tvShowName" class="form-control input-lg" placeholder="Search Tv shows" />
+                <span class="input-group-btn">
+                    <button class="btn btn-info btn-lg" id="getTV" type="button">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="container-fluid">
+        <h1 class="mt-5">Bootstrap 4 Horizontal Scrolling</h1>
+        <p class="subtitle">Horizontal scrolling without CSS. Just copy scrolling wrapper classes</p>
+        <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
+
+            <div class="col-5">
+                <div class="card card-block card-1"></div>
+            </div>
+            <div class="col-5">
+                <div class="card card-block card-2"></div>
+            </div>
+            <div class="col-5">
+                <div class="card card-block card-3"></div>
+            </div>
+            <div class="col-5">
+                <div class="card card-block card-4"></div>
+            </div>
+            <div class="col-5">
+                <div class="card card-block card-5"></div>
+            </div>
+            <div class="col-5">
+                <div class="card card-block card-6"></div>
+            </div>
+            <div class="col-5">
+                <div class="card card-block card-7"></div>
+            </div>
+            <div class="col-5">
+                <div class="card card-block card-8"></div>
+            </div>
+            <div class="col-5">
+                <div class="card card-block card-9"></div>
+            </div>
+            <div class="col-5">
+                <div class="card card-block card-10"></div>
+            </div>
+        </div>
+    </div>
     <div id="ph">
     </div>
 
