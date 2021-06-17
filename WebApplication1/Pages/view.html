@@ -2,7 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title> </title>
+    <title>C-Moo-View your Episodes!</title>
+    <!-- ICON -->
+    <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png">
+
 
     <style type="text/css">
         #ph > img {
@@ -49,7 +52,7 @@
         function getEpisodesErrorCB(err) {
             console.log(err);
         }
-        
+
 
         //call function to ajax call of filtered list
         function renderEpsBySer(opt) {
@@ -68,7 +71,7 @@
                 str += "<image src=" + eps[i].Img + ">";
                 str += "<p><b>Description:</b> " + eps[i].Description + "</p></div>";
             }
-            
+
             $("#ph").html(str);
         }
 

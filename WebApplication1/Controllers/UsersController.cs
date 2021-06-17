@@ -39,8 +39,10 @@ namespace WebApplication1.Controllers
         }
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, string status)
         {
+            User u = new User();
+            u.ChangeStatus(id, status);
         }
 
         // DELETE api/<controller>/5

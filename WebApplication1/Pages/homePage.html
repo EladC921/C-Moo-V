@@ -3,9 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <title>C-Moo-V</title>
+    <!-- ICON -->
+    <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png">
+
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> <!--W3Schools css-->
     <style>
-        
+
         body {
             background-color: lightgreen;
         }
@@ -221,9 +224,16 @@
         //Login success
         function getULoginSuccessCB(user) {
             console.log(user);
-            delete user.Pass;
-            localStorage.user = JSON.stringify(user);
-            if (user.Mail == "admin@control.tmdb") {
+            u = user;
+            api = "../api/Users/" + u.Id + "?status=Login";
+            ajaxCall("PUT", api, "", changeStatusSuccessCB, error);
+        }
+
+        //change status to Online success
+        function changeStatusSuccessCB() {
+            delete u.Pass;
+            localStorage.user = JSON.stringify(u);
+            if (u.Mail == "admin@control.tmdb") {
                 window.location.href = "adminView.html";
             }
             else
@@ -245,6 +255,11 @@
             } else {
                 x.type = "password";
             }
+        }
+
+        //error ajax call method
+        function error(err) {
+            console.log(err);
         }
     </script>
 

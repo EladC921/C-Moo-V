@@ -308,6 +308,7 @@ namespace WebApplication1.Models.DAL
                     u.BirthYear = Convert.ToInt32(dr["birth_year"]);
                     u.FavGenre = (string)dr["fav_genre"];
                     u.Address = (string)dr["address"];
+                    u.Status = (string)dr["status"];
                     uList.Add(u);
                 }
                 return uList;
@@ -341,7 +342,7 @@ namespace WebApplication1.Models.DAL
                 selectSTR = (string.Equals(type, "Episodes")) ?
                       "SELECT S.name 'Series Name', E.name 'Episode Name', COUNT(P.id_user) 'num of users' FROM Series_2021 S inner join Episodes_2021 E on E.id_ser = S.id inner join Preferences_2021 P on E.id = P.id_ep GROUP BY S.name, E.name Order BY[num of users] DESC" :
                       "SELECT S.name 'Series Name', COUNT(P.id_user) 'num of users' FROM Series_2021 S inner join Episodes_2021 E on E.id_ser = S.id inner join Preferences_2021 P on E.id = P.id_ep GROUP BY S.name Order BY[num of users] DESC";
-                 
+
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
                 // get a reader
@@ -376,6 +377,56 @@ namespace WebApplication1.Models.DAL
             }
 
         }
-    }
 
+
+        public int ChangeUserStatus(int id, string status)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            status = (status.Equals("Login")) ? "Online" : "Offline";
+            String cStr = "UPDATE Users_2021 SET status = '" + status + "' WHERE id = " + id;     // String command
+
+            cmd = CreateCommand(cStr, con);             // create the command
+
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                return numEffected;
+            }
+            catch (SqlException ex)
+            {
+                //To check if there is viaolation of mult emails of keys
+                if (ex.Number == 2627 || ex.Number == 2601)
+                {
+                    return -1;
+                }
+                else throw;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+
+        }
+    }
 }

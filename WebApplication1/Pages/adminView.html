@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>C-Moo-V Admin</title>
 
     <style>
         #welcome {
@@ -23,7 +23,6 @@
         #userTbl, #epTbl, #serTbl {
             margin-left: 10px;
             margin-right: 10px;
-   
         }
 
         #usersTable, #epTable, #serTable {
@@ -45,6 +44,9 @@
             display: flex;
         }
     </style>
+    <!-- ICON -->
+    <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png">
+
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
@@ -68,6 +70,8 @@
             loadUserTable();
             loadEpTable();
             loadSerTable();
+
+
 
         })
 
@@ -159,6 +163,12 @@
             }
         }
 
+        function usersStatus(status) {
+            if (status);
+            setInterval(function () {
+
+            }, 10000);
+        }
 
     </script>
 </head>
@@ -213,6 +223,9 @@
                 </thead>
             </table>
         </div>
+    </div>
+    <div id="usersStatus">
+
     </div>
 </body>
 </html>

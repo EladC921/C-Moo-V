@@ -18,6 +18,7 @@ namespace WebApplication1.Models
         int birthYear;
         string favGenre;
         string address;
+        string status;
 
         public int Id { get => id; set => id = value; }
         public string Name { get => name; set => name = value; }
@@ -29,6 +30,7 @@ namespace WebApplication1.Models
         public int BirthYear { get => birthYear; set => birthYear = value; }
         public string FavGenre { get => favGenre; set => favGenre = value; }
         public string Address { get => address; set => address = value; }
+        public string Status { get => status; set => status = value; }
 
         public int Insert()
         {
@@ -49,7 +51,12 @@ namespace WebApplication1.Models
         {
             DataServices ds = new DataServices();
             return ds.GetUList();
+        }
 
+        public void ChangeStatus(int id, string status)
+        {
+            DataServices ds = new DataServices();
+            ds.ChangeUserStatus(id, status);
         }
     }
 }
