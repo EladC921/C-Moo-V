@@ -428,5 +428,64 @@ namespace WebApplication1.Models.DAL
             }
 
         }
+
+        //Insert Actors list to DB
+        public int InsertActors(List<Actor> actors)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+
+            while (true)
+            {
+                String cStr = "";
+                foreach (Actor a in actors)
+                {
+                    cStr += "INSERT INTO Actors_2021 ";
+                    cStr += "VALUES (" + a.Id + ", '" + a.Name + "' , '" + a.Gender + "' , '" + a.Profile_path + "') ";   // String command
+                    cStr += "INSERT INTO ActorInSer_2021 ";
+                    cStr += "VALUES (" + a.Id + "," + a.Ser_id + ") ";   // String command
+                }
+
+                cmd = CreateCommand(cStr, con);             // create the command
+
+                try
+                {
+                    int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                }
+                catch (SqlException ex)
+                {
+                    //To check if there is viaolation of mult emails of keys
+                    if (ex.Number != 2627 && ex.Number != 2601)
+                        throw;
+                }
+                catch (Exception ex)
+                {
+                    // write to log
+                    throw (ex);
+                }
+
+                finally
+                {
+                    if (con != null)
+                    {
+                        // close the db connection
+                        con.Close();
+                    }
+                }
+                return 1;
+            }
+
+        }
     }
 }
