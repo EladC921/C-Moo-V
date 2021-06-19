@@ -169,19 +169,23 @@
                 window.addEventListener("beforeunload", function (event) { });
                 window.onbeforeunload = function (event) { };
             }
+        
             else window.location.href = "homePage.html";
+            if (localStorage.ser != null) { //if user already logged in, details saved -> auto-login
+                Tv = JSON.parse(localStorage.ser);
+             
+            }
+
+            randSeasons(Tv.Id);
 
             //logout -> clear localStorage and return to homepage
             $("#logout").click(function () {
                 api = "../api/Users/" + user.Id + "?status=Logout";
                 ajaxCall("PUT", api, "", changeStatusSuccessCB, error);
             })
-            renAirToday();
-            renDis();
+
             //loadUsersOnline();
 
-
-            $("#getTV").click(getTV);
 
             //key from tmdb
             key = "fe72ae4f33f6eb8a2b98a62fb320f4ec";
@@ -196,53 +200,7 @@
                 window.location.href = "view.html";
             })
         });
-        function renAirToday() {
-          
-            let api = "https://api.themoviedb.org/3/tv/airing_today?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US&page=1";
-                ajaxCall("GET", api, "", getAirCB, error);
-        }
 
-        //render the "air today" tv shows
-        function getAirCB(obj) {
-          
-            let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
-
-            for (var i = 0; i < obj.results.length; i++) {
-                str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
-                str += "<div class='movie-image' id=" + obj.results[i].id + " style='overflow: hidden;'>";
-                if (obj.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item w-100' alt=''/> ";
-                else str += "<img src='" + imagePath + obj.results[i].poster_path + "' onclick='randSeasons(" + obj.results[i].id + ")' class='card-img-top img-hover w-100' alt=''/> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
-                str += "<h4 class='card-title text-center'>" + obj.results[i].name + "</h4>";
-                str += "</div></div>";
-                //$("#seasonDiv").append(str);
-            }
-            str += '</div></div></section>';
-            $("#ph").html(str);
-        }
-
-        function renDis() {
-          
-            let api = "https://api.themoviedb.org/3/tv/top_rated?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US&page=1";
-            ajaxCall("GET", api, "", getDisCB, error);
-        }
-
-        //render the "air today" tv shows
-        function getDisCB(obj) {
-
-            let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
-
-            for (var i = 0; i < obj.results.length; i++) {
-                str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
-                str += "<div class='movie-image' id=" + obj.results[i].id + " style='overflow: hidden;'>";
-                if (obj.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item w-100' alt=''/> ";
-                else str += "<img src='" + imagePath + obj.results[i].poster_path + "' onclick='randSeasons(" + obj.results[i].id + ")' class='card-img-top img-hover w-100' alt=''/> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
-                str += "<h4 class='card-title text-center'>" + obj.results[i].name + "</h4>";
-                str += "</div></div>";
-                //$("#seasonDiv").append(str);
-            }
-            str += '</div></div></section>';
-            $("#ph1").html(str);
-        }
 
         //change status to Offline after Logout success
         function changeStatusSuccessCB() {
@@ -255,53 +213,15 @@
             console.log(err);
         }
 
-        function getTV() {
-
-            let name = $("#tvShowName").val();
-            let method = "3/search/tv?";
-            let moreParams = "&language=en-US&page=1&include_adult=false&";
-            let query = "query=" + encodeURIComponent(name);
-
-            let apiCall = url + method + api_key + moreParams + query;
-            ajaxCall("GET", apiCall, "", getTVSuccessCB, error);
-        }
 
         // TV Success
 
-        function getTVSuccessCB(tv) {
-            $("#ph").html('');
-            $("#ph-actors").html('');
-            $("#ph-present").html('');
-            $("#ph-seasons").html('');
-            $("#ph-eps").html('');
-            
-            console.log("Results:")
-            console.log(tv.results)
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
-            
-            for (var i = 0; i < tv.results.length; i++) {
-                str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
-                str += "<div class='movie-image' id=" + tv.results[i].id + " style='overflow: hidden;'>";
-                if (tv.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' onclick='randSeasons(" + tv.results[i].id +")' class='card-img-top item w-100' alt=''/> ";
-                else str += "<img src='" + imagePath + tv.results[i].poster_path + "' onclick='randSeasons(" + tv.results[i].id+")' class='card-img-top img-hover w-100' alt=''/> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
-                str += "<h4 class='card-title text-center'>" + tv.results[i].name + "</h4>";
-                str += "</div></div>";
-                //$("#seasonDiv").append(str);
-            }
-            console.log(str);
 
-            str += '</div></div></section>';
-            $("#ph").html(str);
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        }
 
         //Rand the seasons of the TV Show
             function randSeasons(id) {
                 //Creation of series object
-             
-               
-               
+
                 let apiTv = "https://api.themoviedb.org/3/tv/" + id + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
                 ajaxCall("GET", apiTv, "", getSpecificTvSuccessCB, error);
 
@@ -311,25 +231,176 @@
         function getSpecificTvSuccessCB(tv) {
             tv_show = tv; //make it global
 
-      
-            ser = {
-                Id: tv_show.id,
-                First_air_date: tv_show.air_date,
-                Name: tv_show.name,
-                Origin_country: tv_show.origin_country[0],
-                Original_language: tv_show.original_language,
-                Overview: tv_show.overview,
-                Popularity: tv_show.overview,
-                Poster_path: tv_show.poster_path
-            }
-            localStorage.ser = JSON.stringify(ser);
-            window.location.href = "serieses.html";
+            $("#ph-present").html('');
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV CARD SHOW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //MAKE A TV_SHOW CARD
+            let str = '<div id="#series-card"><div class="movie_card" id = "bright"><div class="info_section"><div class="movie_header">' +
+                '<img class="locandina" src="' + imagePath + tv_show.poster_path + '"/>' +
+                '<h1>' + tv_show.name + '</h1><h4>' + tv_show.first_air_date + '</h4>' +
+                '<span class="minutes">' + tv_show.status + '</span><p class="type">' + tv_show.original_language + '</p></div >';
+            str += ' <div class="movie_desc"><p class="text">' + tv_show.overview + '</p></div>'
+            str += '</div><div class="blur_back" style="background:url("' + imagePath + tv_show.poster_path + '")"></div></div>';
+            $("#ph-present").html(str);
+           //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV CARD SHOW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      
+            console.log("checkpoint: tv show")
+            console.log(tv_show);
+            number_of_seasons = tv_show.number_of_seasons;
+
+          
+
+            //POST series object
+            let apiSeries = "../api/Series";
+            ajaxCall("POST", apiSeries, JSON.stringify(Tv), postSeriesSuccessCB, error);
         }
 
-      
-      
+        //Rand the Episodes of the season
+        function randEps(i) {
+            apiSeason = "https://api.themoviedb.org/3/tv/" + tv_show.id + "/season/" + i + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
+            ajaxCall("GET", apiSeason, "", getEpsSuccessCB, error);
+        }
+
+        //Get the season success - generate episodes
+        function getEpsSuccessCB(_season) {
+            console.log("checkpoint: season");
+            console.log(_season);
+            season = _season
+            number_of_eps = season.episodes.length;
+            let str = '<div id="#series-card"><div class="movie_card" id = "bright"><div class="info_section"><div class="movie_header">' +
+                '<img class="locandina" src="' + imagePath + _season.poster_path + '"/>' +
+                '<h1>' + _season.name + '</h1><h4>' + _season.air_date + '</h4>' +'</div >';
+            str += ' <div class="movie_desc"><p class="text">' + _season.overview + '</p></div>'
+            str += '</div><div class="blur_back" style="background:url("' + imagePath + _season.poster_path + '")"></div></div>';
+            $("#ph-present1").html(str);
+
+            $("#ph-eps").html('');
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            let str1 = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
+            for (var i = 0; i < number_of_eps; i++) {
+                id = season.episodes[i].id;
+                str1 += "<div class='card card-block mx-2' style='width: 19rem; background-color: rgba(255, 255, 255, 0.8);'>";
+                str1 += "<div class='movie-image' id=" + id + " style='overflow: hidden;'>";
+
+                if (season.episodes[i].still_path == null) str1 += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item' alt=''/> ";
+                else str1 += "<img src='" + imagePath + season.episodes[i].still_path + "' class='card-img-top img-hover' alt=''/> "; //if there's no photo then put a generic one
+
+                str1 += "<h4 class='card-title text-center'>" + season.episodes[i].episode_number + ". " + season.episodes[i].name + "</h4>"; //episode name
+                               str1 += "<div class='card-body'>";
+                str1 += "<button class='bg-but text-white btn btn-xl btn-outline-secondary' value=" + i + " onclick='insert(this.value)'>Add to My List!</button>"; //insert episode button
+                str1 += "</div></div></div>";
+            }
+            str1 += '</div></div></section>';
+            $("#ph-eps").html(str1);
+        }
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+        //Insert button handler
+        function insert(index) {
+            i = index // make it global
+
+            //Creation of episode object
+            ep = {
+                Id: season.episodes[i].id,
+                Id_user: user.Id, //For preference table
+                EpName: season.episodes[i].name,
+                Id_ser: tv_show.id,
+                SerName: tv_show.name,
+                SeasonNum: season.season_number,
+                Img: imagePath + season.episodes[i].still_path,
+                Description: season.episodes[i].overview + "\nAir Date: " + season.episodes[i].air_date
+            }
+
+            console.log("checkpoint: Episode Object to Insert");
+            console.log(ep);
+
+            let apiEps = "../api/Episodes";
+            ajaxCall("POST", apiEps, JSON.stringify(ep), postEpsSuccessCB, error);
+        }
+
+        //Post series Success
+        function postSeriesSuccessCB() {
+            console.log("Breakpoint: SERIES POST SUCCESS")
+            //using POST through ajax call to add the object to the episode list
+
+            //Put the actors
+            apiCredits = "https://api.themoviedb.org/3/tv/" + tv_show.id + "/credits?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
+            ajaxCall("GET", apiCredits, "", getCreditsSuccessCB, error);
+
+            console.log("checkpoint");
+        }
+
+
+        //Post Episode Success
+        function postEpsSuccessCB(msg) {
+            if (msg == -1)
+                console.log("episode already exists in sql table therefore wasn't added once again")
+            alert("Episode inserted");
+        }
+
+        //GET Credits and cast Success
+        function getCreditsSuccessCB(credits) {
+            console.log("checkpoint: credits")
+            console.log(credits);
+            let gender = "";
+            actors = [];
+
+
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ACTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
+            for (var i = 0; i < credits.cast.length; i++) {
+                str += "<div class='card card-block mx-2' style='width: 20rem; background-color:rgba(255, 255, 255, 0.8);'>";
+                str += "<div class='movie-image' id=" + credits.cast[i].id + " style='overflow: hidden;'>";
+                if (credits.cast[i].profile_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item' alt=''/> ";
+                else str += "<img src='" + imagePath + credits.cast[i].profile_path + "' class='card-img-top img-hover' alt=''/> "; //make a clickable img of the Season, if there's no photo then put a generic one
+                str += "<h4 class='card-title text-center'>" + credits.cast[i].name + "</h4>"; //episode name
+                str += "<h5 class='text-center'>" + credits.cast[i].character + "</h5>"; //character name
+                str += "</div></div>";
+
+                //Gender is 1 or 2 or null then changing it accordingly
+                if (credits.cast[i].gender == 1) gender = 'F';
+                else if (credits.cast[i].gender == 2) gender = 'M';
+                else gender = 'U';
+                //Create a list of actors in a tv show to put in the DB
+                actors[i] = {
+                    Id: credits.cast[i].id,
+                    Ser_id: tv_show.id,
+                    Name: credits.cast[i].name,
+                    Gender: gender,
+                    Profile_path: credits.cast[i].profile_path
+                }
+            }
+            str += '</div></div></section>';
+            $("#ph-actors").append(str);
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ACTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+            apiAc = "../api/Actors";
+            ajaxCall("POST", apiAc, JSON.stringify(actors), postActorsSuccessCB, error);
+        }
+
+        //Post actors Success
+        function postActorsSuccessCB() {
+            console.log("actors has been inserted to DB");
+
+            $("#ph-seasons").html('');
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //rand to page
+            let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
+            for (var i = 0; i < number_of_seasons; i++) {
+                id = tv_show.seasons[i].id;
+                str += "<div class='card card-block mx-2' style='width: 20rem; background-color:rgba(255, 255, 255, 0.8);'>";
+                str += "<div class='movie-image' id=" + id + " style='overflow: hidden;'>";
+                if (tv_show.seasons[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' onclick='randEps(" + tv_show.seasons[i].season_number + ")' class='card-img-top item' alt=''/> ";
+                else str += "<img src='" + imagePath + tv_show.seasons[i].poster_path + "' onclick='randEps(" + tv_show.seasons[i].season_number + ")' class='card-img-top img-hover' alt=''/> "; //make a clickable img of the Season, if there's no photo then put a generic one
+                str += "<h4 class='card-title text-center'>" + tv_show.seasons[i].season_number + ". " + tv_show.seasons[i].name + "</h4>"; //episode name
+                str += "</div></div>";
+            }
+            str += '</div></div></section>';
+            $("#ph-seasons").html(str);
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        }
+
         //Load all the users that are online
         function loadUsersOnline() {
             let api = "../api/Users";
@@ -380,7 +451,6 @@
     <input type="text" id="tvShowName" />
     <button id="getTV">Go!</button>
     ////<button id="view">View My Episodes</button>-->
-
     <!-- START PAGE SOURCE -->
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg bg-nav text-uppercase fixed-top" id="mainNav">
@@ -409,32 +479,22 @@
     <header class="masthead bg-dark text-white text-center ">
         <div class="container d-flex align-items-center flex-column ">
             <!-- ICON -->
-            <img class="masthead-avatar mb-5" src="../assets/img/icon.png" alt="..." />
+            <div id="ph-present"> </div>
+            <div id="ph-actors"></div>
             <!-- Heading-->
-            <h1 class="masthead-heading text-uppercase mb-0">
-                Search a TV show
-            </h1>
-            <!-- SEARCH BAR-->
-            <div class="divider-custom divider-light">
-                <div class="divider-custom-line"></div>
-                <input type="text" id="tvShowName" class="text-dark" />
-                <button id="getTV" class="bg-but">Go!</button>
-                <div class="divider-custom-line"></div>
-            </div>
+
+
         </div>
     </header>
     <!-- RENDERING -->
     <div class="container" id="ph-container">
-        <div id="ph-present"> </div>
-        <div id="ph-present"> </div>
-        <h1 class="masthead-heading text-uppercase mb-0">
-           ON AIR TODAY
-        </h1>
+
+
+        <div id="ph-seasons"> </div>
+        <div id="ph-present1"> </div>
+        <div id="ph-eps"> </div>
+
         <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
-        <h1 class="masthead-heading text-uppercase mb-0">
-           POPULAR
-        </h1>
-        <div id="ph1"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
     </div>
     <!-- About Section-->
     <section class="page-section bg-primary text-white mb-0" id="about">
