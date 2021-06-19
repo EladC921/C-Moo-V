@@ -223,7 +223,11 @@
 
         function getTVSuccessCB(tv) {
             $("#ph").html('');
-
+            $("#ph-actors").html('');
+            $("#ph-present").html('');
+            $("#ph-seasons").html('');
+            $("#ph-eps").html('');
+            
             console.log("Results:")
             console.log(tv.results)
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -525,7 +529,7 @@
         </div>
     </header>
     <!-- RENDERING -->
-    <div class="container">
+    <div class="container" id="ph-container">
         <div id="ph-present"> </div>
         <div id="ph-eps"> </div>
         <div id="ph-seasons"> </div>

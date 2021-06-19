@@ -94,12 +94,12 @@ namespace WebApplication1.Models.DAL
                 Episode ep = obj as Episode;
                 sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')", ep.Id, ep.Id_ser, r.Replace(ep.EpName, ""), r.Replace(ep.SerName, ""), ep.SeasonNum, ep.Img, r.Replace(ep.Description, ""));
                 prefix = "INSERT INTO Episodes_2021 " + "([id], [id_ser] , [name], [sername], [season_num], [image], [description]) ";
-                commandPref = "INSERT INTO Preferences_2021 " + "([id_ep], [id_user]) " + "Values(" + ep.Id.ToString() + "," + ep.Id_user.ToString() + ")";
+                commandPref = "INSERT INTO Preferences_2021 " + "([id_ep], [id_user], [id_ser]) " + "Values(" + ep.Id.ToString() + "," + ep.Id_user.ToString() + "," + ep.Id_ser.ToString() + ")";
             }
             else if (obj is Serie)
             {
                 Serie ser = obj as Serie;
-                sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')", ser.Id, ser.First_air_date, ser.Name, ser.Origin_country, ser.Original_language, r.Replace(ser.Overview, ""), ser.Popularity, ser.Poster_path);
+                sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')", ser.Id, ser.First_air_date, r.Replace(ser.Name,""), ser.Origin_country, ser.Original_language, r.Replace(ser.Overview, ""), ser.Popularity, ser.Poster_path);
                 prefix = "INSERT INTO Series_2021 " + "([id], [first_air_date], [name], [origin_country], [original_language], [overview], [popularity], [poster_path]) ";
             }
 
@@ -449,10 +449,12 @@ namespace WebApplication1.Models.DAL
             while (true)
             {
                 String cStr = "";
+                Regex r = new Regex(@"('|\(|\))", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
                 foreach (Actor a in actors)
                 {
                     cStr += "INSERT INTO Actors_2021 ";
-                    cStr += "VALUES (" + a.Id + ", '" + a.Name + "' , '" + a.Gender + "' , '" + a.Profile_path + "') ";   // String command
+                    cStr += "VALUES (" + a.Id + ", '" + r.Replace(a.Name,"") + "' , '" + a.Gender + "' , '" + a.Profile_path + "') ";   // String command
                     cStr += "INSERT INTO ActorInSer_2021 ";
                     cStr += "VALUES (" + a.Id + "," + a.Ser_id + ") ";   // String command
                 }
