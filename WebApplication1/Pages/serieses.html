@@ -238,7 +238,7 @@
                 '<img class="locandina" src="' + imagePath + tv_show.poster_path + '"/>' +
                 '<h1>' + tv_show.name + '</h1><h4>' + tv_show.first_air_date + '</h4>' +
                 '<span class="minutes">' + tv_show.status + '</span><p class="type">' + tv_show.original_language + '</p></div >';
-            str += ' <div class="movie_desc"><p class="text">' + tv_show.overview + '</p></div>'
+            str += ' <div class="movie_desc"><p class="text text-left">' + tv_show.overview + '</p></div>'
             str += '</div><div class="blur_back" style="background:url("' + imagePath + tv_show.poster_path + '")"></div></div>';
             $("#ph-present").html(str);
            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV CARD SHOW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

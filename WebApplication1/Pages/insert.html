@@ -204,9 +204,9 @@
 
         //render the "air today" tv shows
         function getAirCB(obj) {
-          
-            let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
 
+            //~~~~~~~~~~~~~~~~~~~~~~~~~ TV SEARCH RESAULTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < obj.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
                 str += "<div class='movie-image' id=" + obj.results[i].id + " style='overflow: hidden;'>";
@@ -217,7 +217,8 @@
                 //$("#seasonDiv").append(str);
             }
             str += '</div></div></section>';
-            $("#ph").html(str);
+            $("#ph-search").html(str);
+            //~~~~~~~~~~~~~~~~~~~~~~~~~ /TV SEARCH RESAULTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
         function renDis() {
@@ -226,11 +227,11 @@
             ajaxCall("GET", api, "", getDisCB, error);
         }
 
-        //render the "air today" tv shows
+        //render the POPULAR tv shows
         function getDisCB(obj) {
 
+            //~~~~~~~~~~~~~~~~~~~~~~~~~ /POPULAR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
-
             for (var i = 0; i < obj.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
                 str += "<div class='movie-image' id=" + obj.results[i].id + " style='overflow: hidden;'>";
@@ -242,6 +243,7 @@
             }
             str += '</div></div></section>';
             $("#ph1").html(str);
+            //~~~~~~~~~~~~~~~~~~~~~~~~~ /POPULAR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
         //change status to Offline after Logout success
@@ -269,17 +271,13 @@
         // TV Success
 
         function getTVSuccessCB(tv) {
-            $("#ph").html('');
-            $("#ph-actors").html('');
-            $("#ph-present").html('');
-            $("#ph-seasons").html('');
-            $("#ph-eps").html('');
+            $("#ph-search").html('');
+
             
             console.log("Results:")
             console.log(tv.results)
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ON AIR TODAY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
-            
             for (var i = 0; i < tv.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
                 str += "<div class='movie-image' id=" + tv.results[i].id + " style='overflow: hidden;'>";
@@ -293,15 +291,12 @@
 
             str += '</div></div></section>';
             $("#ph").html(str);
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /ON AIR TODAY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
         //Rand the seasons of the TV Show
             function randSeasons(id) {
-                //Creation of series object
-             
-               
-               
+                //Creation of series object           
                 let apiTv = "https://api.themoviedb.org/3/tv/" + id + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
                 ajaxCall("GET", apiTv, "", getSpecificTvSuccessCB, error);
 
@@ -311,7 +306,7 @@
         function getSpecificTvSuccessCB(tv) {
             tv_show = tv; //make it global
 
-      
+            //Creation of a series object --> local storage to pull in serieses (series presentation)
             ser = {
                 Id: tv_show.id,
                 First_air_date: tv_show.air_date,
@@ -324,8 +319,6 @@
             }
             localStorage.ser = JSON.stringify(ser);
             window.location.href = "serieses.html";
-
-      
         }
 
       
@@ -368,19 +361,9 @@
             }
         }
     </script>
-
-    <!-- Carousel Scripts js-->
-    <!-- End of Carousel Scripts -->
 </head>
 <!-- BODY -->
 <body id="page-top">
-    <!--<button id="logout">Logout</button><br />
-    <hr />
-    <h2>Search a TV show</h2>
-    <input type="text" id="tvShowName" />
-    <button id="getTV">Go!</button>
-    ////<button id="view">View My Episodes</button>-->
-
     <!-- START PAGE SOURCE -->
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg bg-nav text-uppercase fixed-top" id="mainNav">
@@ -425,8 +408,7 @@
     </header>
     <!-- RENDERING -->
     <div class="container" id="ph-container">
-        <div id="ph-present"> </div>
-        <div id="ph-present"> </div>
+        <div id="ph-search"></div>
         <h1 class="masthead-heading text-uppercase mb-0">
            ON AIR TODAY
         </h1>
@@ -763,104 +745,8 @@
         </div>
     </div>
 
-
-
-
-
-
     <!-- END PAGE SOURCE -->
-    <!--<div id="ph">
-    </div>-->
-    <!--Carousel Slider -->
-    <!--<section class="page-section mb-0" id="main">
-        <div class="container">
-            - <div class="container testimonial-group"
-            <h2 class="page-section-heading text-uppercase text-white">Popular now</h2>
-            <div class="row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow" id="ph">
 
-
-                <div class="card card-block mx-2" style="width:18rem;background-color:rgba(255,255,255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3>Cow 1</h3>
-                        <p> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255,255,255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-            </div>
-        </div>-->
-    <!-- End of Carousel Slider -->
     <!-- Users Online Table-->
     <!--<div id="statusTbl">
         <h2 id="statusData">Users online:</h2>
@@ -875,8 +761,3 @@
     </div>-->
 </body>
 </html>
-
-<!--
-                    <div id="ph" class="row text-center">
-
-                    </div>-->
