@@ -164,10 +164,12 @@
             if (localStorage.user != null) { //if user already logged in, details saved -> auto-login
                 user = JSON.parse(localStorage.user);
                 console.log(user);
+                //document.getElementById("welcome").innerHTML = "Hello " + user.Name + " " + user.Sername;
                 $("#welcome").html("Hello " + user.Name + " " + user.Sername);
                 window.addEventListener("beforeunload", function (event) { });
                 window.onbeforeunload = function (event) { };
             }
+            else window.location.href = "homePage.html";
 
             //logout -> clear localStorage and return to homepage
             $("#logout").click(function () {
@@ -220,6 +222,7 @@
         // TV Success
 
         function getTVSuccessCB(tv) {
+            $("#ph").html('');
 
             console.log("Results:")
             console.log(tv.results)
@@ -238,7 +241,7 @@
             console.log(str);
 
             str += '</div></div></section>';
-            $("#ph").append(str);
+            $("#ph").html(str);
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         }
@@ -272,7 +275,7 @@
             number_of_seasons = tv_show.number_of_seasons;
 
 
-
+            $("#ph-seasons").html('');
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             //rand to page
             str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
@@ -305,7 +308,7 @@
             season = _season
             number_of_eps = season.episodes.length;
 
-
+            $("#ph-eps").html('');
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < number_of_eps; i++) {
@@ -475,17 +478,22 @@
     <input type="text" id="tvShowName" />
     <button id="getTV">Go!</button>
     ////<button id="view">View My Episodes</button>-->
-    <div id="welcome"></div>
 
     <!-- START PAGE SOURCE -->
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg bg-nav text-uppercase fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand" href="#page-top">C-Moo-V</a>
+            <a class="navbar-brand" href="#page-top">
+                C-Moo-V
+            </a>
+            <div class="text-secondary" id="welcome" href="#page-top"></div>
+
+
             <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu
                 <i class="fas fa-bars"></i>
             </button>
+            <!-- MENU ITEMS -->
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item mx-0 mx-lg-1" id="view"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">View My Episodes</a></li>
@@ -513,11 +521,13 @@
             </div>
         </div>
     </header>
-    <div id="ph-present"> </div>
-    <div id="ph-eps"> </div>
-    <div id="ph-seasons"> </div>
-    <div id="ph" class="bigger"> <h3 class="text-dark text-center">Search a TV-Show</h3> </div>
-
+    <!-- RENDERING -->
+    <div class="container">
+        <div id="ph-present"> </div>
+        <div id="ph-eps"> </div>
+        <div id="ph-seasons"> </div>
+        <div id="ph"><div class="bigger"><h3 class="text-dark text-center">Search a TV-Show</h3></div> </div>
+    </div>
     <!-- About Section-->
     <section class="page-section bg-primary text-white mb-0" id="about">
         <div class="container">
