@@ -120,15 +120,7 @@
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Carousel style ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     </style>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
 
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-         https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
-    <script src="../js/config.js"></script>
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ICON -->
     <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png" />
 
@@ -165,6 +157,17 @@
     <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <!--**** Remember to add the database script ***-->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src="../js/config.js"></script>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <script>
 
         // https://api.themoviedb.org/3/search/tv?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US&page=1&include_adult=false&query=Grey%27s%20Anatomy
@@ -188,8 +191,18 @@
             })
             renAirToday();
             renDis();
-            //loadUsersOnline();
 
+            //FireBase users status
+            online = false;
+            usersOnline = [];
+            console.log(firebase)
+            uref = firebase.database().ref("users-online");
+            // listen to incoming messages
+            listenToUsersConnection();
+            // listen to removing messages
+            listenToUsersLogout();
+            ph_status = document.getElementById("ph-status");
+            //loadUsersOnline();
 
             $("#getTV").click(getTV);
 
@@ -212,10 +225,82 @@
             ajaxCall("GET", api, "", getAirCB, error);
         }
 
+
+
+        //Update FireBase whenever user's logging in
+        function listenToUsersConnection() {
+            uref.on("child_added", snapshot => {
+                let par = {
+                    userName: snapshot.val().name,
+                    userStatus: snapshot.val().status,
+                    userId: snapshot.val().userId
+                }
+                usersOnline.push(par);
+                printUsersOnline(par);
+            })
+        }
+
+        //Update FireBase whenever user's logging out
+        function listenToUsersLogout() {
+            uref.on("child_removed", snapshot => {
+                usersOnline = usersOnline.filter(m => m.userId != snapshot.val().userId);
+                // re-render the messages
+                updateUsersOnline(usersOnline);
+            })
+        }
+
+        //print to screen the users online list
+        function printUsersOnline(par) {
+            if (par.userStatus == 'online')
+                ph_status.innerHTML += par.name + " - online";
+        }
+
+        //Update the users online on the screen if a user's logging out
+        function updateUsersOnline(usersOnline) {
+            var str = "";
+            for (let i = 0; i < usersOnline.length; i++) {
+                const uOnline = usersOnline[i];
+                str += uOnline.name + " - online";
+            }
+            ph_status.innerHTML = str;
+        }
+
+        //
+        function Join() {
+            if (online == false) {
+                online = true;
+                uref.push().set({ "userName": name, "userStatus": "online", "userId": user.Id });
+            }
+            else {
+                online = false;
+                uref.orderByChild("userId").equalTo(user.Id).on("child_added", function (snapshot) {
+                    //console.log(snapshot.key);
+                    uref.child(snapshot.key).remove();
+                    readParticipants();
+                })
+            }
+        }
+
+        //
+        function readParticipants() {
+            parArr = [];
+            uref.once("value", snapshot => {
+                snapshot.forEach(element => {
+                    par = {
+                        userName: element.val().userName,
+                        userStatus: element.val().userStatus,
+                        userId: element.val().userId
+                    }
+                    parArr.push(par);
+                });
+                updateUsersOnline(parArr);
+            })
+        }
+
         //render the "air today" tv shows
         function getAirCB(obj) {
 
-            //~~~~~~~~~~~~~~~~~~~~~~~~~ TV SEARCH RESAULTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //~~~~~~~~~~~~~~~~~~~~~~~~~ ON AIR TODAY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < obj.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
@@ -227,8 +312,8 @@
                 //$("#seasonDiv").append(str);
             }
             str += '</div></div></section>';
-            $("#ph-search").html(str);
-            //~~~~~~~~~~~~~~~~~~~~~~~~~ /TV SEARCH RESAULTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            $("#ph").html(str);
+            //~~~~~~~~~~~~~~~~~~~~~~~~~ /ON AIR TODAY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
         function renDis() {
@@ -286,7 +371,7 @@
 
             console.log("Results:")
             console.log(tv.results)
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ON AIR TODAY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV SEARCH RESAULTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < tv.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
@@ -300,8 +385,8 @@
             console.log(str);
 
             str += '</div></div></section>';
-            $("#ph").html(str);
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /ON AIR TODAY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            $("#ph-search").html(str);
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /TV SEARCH RESAULTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
         //Rand the seasons of the TV Show
@@ -332,7 +417,7 @@
         }
 
 
-
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~ USERS STATUS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //Load all the users that are online
         function loadUsersOnline() {
             let api = "../api/Users";
@@ -370,6 +455,8 @@
                 alert(err);
             }
         }
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~ /USERS STATUS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     </script>
 </head>
 <!-- BODY -->
@@ -422,11 +509,12 @@
         <h1 class="masthead-heading text-uppercase mb-0">
             ON AIR TODAY
         </h1>
-        <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
+        <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div></div>
         <h1 class="masthead-heading text-uppercase mb-0">
             POPULAR
         </h1>
         <div id="ph1"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
+        <div id="ph-status"></div>
     </div>
     <!-- About Section-->
     <section class="page-section bg-primary text-white mb-0" id="about">
