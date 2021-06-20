@@ -119,6 +119,16 @@
             }
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Carousel style ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     </style>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src="../js/config.js"></script>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- ICON -->
     <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png" />
 
@@ -197,9 +207,9 @@
             })
         });
         function renAirToday() {
-          
+
             let api = "https://api.themoviedb.org/3/tv/airing_today?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US&page=1";
-                ajaxCall("GET", api, "", getAirCB, error);
+            ajaxCall("GET", api, "", getAirCB, error);
         }
 
         //render the "air today" tv shows
@@ -222,7 +232,7 @@
         }
 
         function renDis() {
-          
+
             let api = "https://api.themoviedb.org/3/tv/top_rated?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US&page=1";
             ajaxCall("GET", api, "", getDisCB, error);
         }
@@ -273,7 +283,7 @@
         function getTVSuccessCB(tv) {
             $("#ph-search").html('');
 
-            
+
             console.log("Results:")
             console.log(tv.results)
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ON AIR TODAY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -281,8 +291,8 @@
             for (var i = 0; i < tv.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
                 str += "<div class='movie-image' id=" + tv.results[i].id + " style='overflow: hidden;'>";
-                if (tv.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' onclick='randSeasons(" + tv.results[i].id +")' class='card-img-top item w-100' alt=''/> ";
-                else str += "<img src='" + imagePath + tv.results[i].poster_path + "' onclick='randSeasons(" + tv.results[i].id+")' class='card-img-top img-hover w-100' alt=''/> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
+                if (tv.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' onclick='randSeasons(" + tv.results[i].id + ")' class='card-img-top item w-100' alt=''/> ";
+                else str += "<img src='" + imagePath + tv.results[i].poster_path + "' onclick='randSeasons(" + tv.results[i].id + ")' class='card-img-top img-hover w-100' alt=''/> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
                 str += "<h4 class='card-title text-center'>" + tv.results[i].name + "</h4>";
                 str += "</div></div>";
                 //$("#seasonDiv").append(str);
@@ -295,10 +305,10 @@
         }
 
         //Rand the seasons of the TV Show
-            function randSeasons(id) {
-                //Creation of series object           
-                let apiTv = "https://api.themoviedb.org/3/tv/" + id + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
-                ajaxCall("GET", apiTv, "", getSpecificTvSuccessCB, error);
+        function randSeasons(id) {
+            //Creation of series object
+            let apiTv = "https://api.themoviedb.org/3/tv/" + id + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
+            ajaxCall("GET", apiTv, "", getSpecificTvSuccessCB, error);
 
         }
 
@@ -321,8 +331,8 @@
             window.location.href = "serieses.html";
         }
 
-      
-      
+
+
         //Load all the users that are online
         function loadUsersOnline() {
             let api = "../api/Users";
@@ -410,11 +420,11 @@
     <div class="container" id="ph-container">
         <div id="ph-search"></div>
         <h1 class="masthead-heading text-uppercase mb-0">
-           ON AIR TODAY
+            ON AIR TODAY
         </h1>
         <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
         <h1 class="masthead-heading text-uppercase mb-0">
-           POPULAR
+            POPULAR
         </h1>
         <div id="ph1"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
     </div>
@@ -746,7 +756,6 @@
     </div>
 
     <!-- END PAGE SOURCE -->
-
     <!-- Users Online Table-->
     <!--<div id="statusTbl">
         <h2 id="statusData">Users online:</h2>
