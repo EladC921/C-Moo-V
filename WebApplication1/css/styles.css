@@ -11709,8 +11709,15 @@ font-size:8px;
 padding-top: 2%;
 }
 
+.makeitabstract {
+    background-color:lightgrey;
+    color:green;
+    font-size: 15px;
+    position:fixed;
+    bottom:20px;
+    right:20px;
+}
 /* Show Series*/
-
 @import url("https://fonts.googleapis.com/css?family=Montserrat:300,400,700,800");
 
 * {

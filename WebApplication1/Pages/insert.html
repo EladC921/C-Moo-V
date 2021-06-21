@@ -242,6 +242,8 @@ console.log(firebase);*/
                 last_changed: firebase.database.ServerValue.TIMESTAMP,
             };
 
+            userStatusDatabaseRef.set(isOnlineForDatabase);
+
             //Listen to users logging in and out
             listenToUsersConnection();
             listenToUsersLogout();
@@ -348,12 +350,14 @@ console.log(firebase);*/
         function printUsersOnline(par) {
             console.log("checkpoint: user is online");
             //if (par.userStatus == 'online')
-            ph_status.innerHTML += par.userName + "- online";
+            ph_status.innerHTML += "<li class='list-group-item'>" + par.userName + " - online</li>";
+
         }
 
         //Update the users online on the screen if a user's logging out
         function updateUsersOnline(usersOnline) {
-            var str = "<ul class='list-group'>";
+          var str = "<ul class='list-group'>";
+            var str = '';
             for (let i = 0; i < usersOnline.length; i++) {
                 const uOnline = usersOnline[i];
                 str += "<li class='list-group-item'>" + uOnline.userName + " - online</li>";
@@ -613,7 +617,7 @@ console.log(firebase);*/
             TOP RATED
         </h1>
         <div id="ph1"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
-        <div id="ph-status"></div>
+        <div id="ph-status" class="makeitabstract"></div>
     </div>
     <!-- About Section-->
     <section class="page-section bg-primary text-white mb-0" id="about">

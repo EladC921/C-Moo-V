@@ -117,6 +117,58 @@
             ::-webkit-scrollbar-thumb:hover {
                 background: #555;
             }
+
+        @import url("http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
+
+        .chat {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+            .chat li {
+                margin-bottom: 10px;
+                padding-bottom: 5px;
+                border-bottom: 1px dotted #B3A9A9;
+            }
+
+                .chat li.left .chat-body {
+                    margin-left: 60px;
+                }
+
+                .chat li.right .chat-body {
+                    margin-right: 60px;
+                }
+
+
+                .chat li .chat-body p {
+                    margin: 0;
+                    color: #777777;
+                }
+
+            .panel .slidedown .glyphicon, .chat .glyphicon {
+                margin-right: 5px;
+            }
+
+        .body-panel {
+            overflow-y: scroll;
+            height: 250px;
+        }
+
+        ::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            background-color: #F5F5F5;
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+            background-color: #F5F5F5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+            background-color: #555;
+        }
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Carousel style ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     </style>
     <!-- ICON -->
@@ -155,6 +207,18 @@
     <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <!--**** Remember to add the database script ***-->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src="../js/config.js"></script>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
     <script>
 
         // https://api.themoviedb.org/3/search/tv?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US&page=1&include_adult=false&query=Grey%27s%20Anatomy
@@ -168,12 +232,13 @@
                 $("#welcome").html("Hello " + user.Name + " " + user.Sername);
                 window.addEventListener("beforeunload", function (event) { });
                 window.onbeforeunload = function (event) { };
+                init()
             }
-        
+
             else window.location.href = "homePage.html";
             if (localStorage.ser != null) { //if user already logged in, details saved -> auto-login
                 Tv = JSON.parse(localStorage.ser);
-             
+
             }
 
             randSeasons(Tv.Id);
@@ -219,11 +284,11 @@
 
 
         //Rand the seasons of the TV Show
-            function randSeasons(id) {
-                //Creation of series object
+        function randSeasons(id) {
+            //Creation of series object
 
-                let apiTv = "https://api.themoviedb.org/3/tv/" + id + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
-                ajaxCall("GET", apiTv, "", getSpecificTvSuccessCB, error);
+            let apiTv = "https://api.themoviedb.org/3/tv/" + id + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
+            ajaxCall("GET", apiTv, "", getSpecificTvSuccessCB, error);
 
         }
 
@@ -241,13 +306,13 @@
             str += ' <div class="movie_desc"><p class="text text-left">' + tv_show.overview + '</p></div>'
             str += '</div><div class="blur_back" style="background:url("' + imagePath + tv_show.poster_path + '")"></div></div>';
             $("#ph-present").html(str);
-           //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV CARD SHOW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV CARD SHOW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
             console.log("checkpoint: tv show")
             console.log(tv_show);
             number_of_seasons = tv_show.number_of_seasons;
 
-          
+
 
             //POST series object
             let apiSeries = "../api/Series";
@@ -261,6 +326,7 @@
         }
 
         //Get the season success - generate episodes
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         function getEpsSuccessCB(_season) {
             console.log("checkpoint: season");
             console.log(_season);
@@ -268,24 +334,25 @@
             number_of_eps = season.episodes.length;
             let str = '<div id="#series-card"><div class="movie_card" id = "bright"><div class="info_section"><div class="movie_header">' +
                 '<img class="locandina" src="' + imagePath + _season.poster_path + '"/>' +
-                '<h1>' + _season.name + '</h1><h4>' + _season.air_date + '</h4>' +'</div >';
+                '<h1>' + _season.name + '</h1><h4>' + _season.air_date + '</h4>' + '</div >';
             str += ' <div class="movie_desc"><p class="text">' + _season.overview + '</p></div>'
             str += '</div><div class="blur_back" style="background:url("' + imagePath + _season.poster_path + '")"></div></div>';
             $("#ph-present1").html(str);
 
             $("#ph-eps").html('');
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
             let str1 = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < number_of_eps; i++) {
                 id = season.episodes[i].id;
                 str1 += "<div class='card card-block mx-2' style='width: 19rem; background-color: rgba(255, 255, 255, 0.8);'>";
                 str1 += "<div class='movie-image' id=" + id + " style='overflow: hidden;'>";
 
-                if (season.episodes[i].still_path == null) str1 += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item' alt=''/> ";
-                else str1 += "<img src='" + imagePath + season.episodes[i].still_path + "' class='card-img-top img-hover' alt=''/> "; //if there's no photo then put a generic one
+                if (season.episodes[i].still_path == null) str1 += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item' alt=''/> ";//if there's no photo then put a generic one
+                else str1 += "<img src='" + imagePath + season.episodes[i].still_path + "' onclick='rendChat(" + i + ")'" + " class='card-img-top img-hover' alt=''/> ";
+
 
                 str1 += "<h4 class='card-title text-center'>" + season.episodes[i].episode_number + ". " + season.episodes[i].name + "</h4>"; //episode name
-                               str1 += "<div class='card-body'>";
+                str1 += "<div class='card-body'>";
                 str1 += "<button class='bg-but text-white btn btn-xl btn-outline-secondary' value=" + i + " onclick='insert(this.value)'>Add to My List!</button>"; //insert episode button
                 str1 += "</div></div></div>";
             }
@@ -293,6 +360,18 @@
             $("#ph-eps").html(str1);
         }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        //Specific episode card with chat option
+        function rendChat(index) {
+            let str = '<div id="#series-card"><div class="movie_card" id = "bright"><div class="info_section"><div class="movie_header">' +
+                '<img class="locandina" src="' + imagePath + season.episodes[index].still_path + '"/>' +
+                '<h1>' + season.episodes[index].name + '</h1>' + '</span><p class="type">' + season.episodes[index].overview + '</p></div >';
+            str += "<button class='bg-but text-white btn btn-xl btn-outline-secondary' value=" + index + " onclick='insert(this.value)'>Chat!</button>";
+            str += ' <div class="movie_desc"><p class="text text-left">' + '</p></div>'
+            str += '</div><div class="blur_back" style="background:url("' + imagePath + season.episodes[index].still_path + '")"></div></div>';
+
+            $("#ph-spd").html(str);
+        }
 
 
 
@@ -401,44 +480,65 @@
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
-        //Load all the users that are online
-        function loadUsersOnline() {
-            let api = "../api/Users";
-            ajaxCall("GET", api, "", getUsersSuccess, error);
+        function init() {
+            msgArr = [];
+            ref = firebase.database().ref("messages");
+            // listen to incoming messages
+            listenToNewMessages();
+            // listen to removing messages
+
+
         }
 
-        //GET users list success
-        function getUsersSuccess(uList) {
-            console.log(uList);
-            usersOnline = [];
-            j = 0;
-            for (var i = 0; i < uList.length; i++) {
-                if (uList[i].Status == 'Online') {
-                    usersOnline[j] = uList[i];
-                    j++;
+        function listenToNewMessages() {
+            // child_added will be evoked for every child that was added
+            // on the first entry, it will bring all the childs
+            ref.on("child_added", snapshot => {
+                msg = {
+                    name: snapshot.val().name,
+                    content: snapshot.val().msg,
                 }
-            }
-            loadUsersOnlineTbl(usersOnline);
+                msgArr.push(msg)
+                printMessage(msg);
+            })
         }
 
-        //Put the online users in the table
-        function loadUsersOnlineTbl(usersOnline) {
-            console.log(usersOnline);
-            try {
-                statusTbl = $('#statusTable').DataTable({
-                    data: usersOnline,
-                    pageLength: 5,
-                    columns: [
-                        { data: "Name" },
-                        { data: "Status" },
-                    ],
-                });
-            }
-            catch (err) {
-                alert(err);
-            }
+
+
+        function printMessage(msg) {
+            let str = '<li class="right clearfix">' +
+                '<span class="chat-img pull-right">' +
+                '<img src="http://placehold.it/50/FA6F57/fff&text=' + msg.name + '" alt="User Avatar" class="img-circle" />' +
+                '</span>' + ' <div class="chat-body clearfix">' + '<div class="header">' +
+                ' <strong class="pull-right primary-font">Bhaumik Patel</strong>' + ' </div>' +
+                '<p id="messageCont">' + msg.content + '</p>' + '</div></li>';
+
+            newChat.innerHTML += str;
         }
+
+        function printMessages(msgArr) {
+            var str = "";
+            for (let index = 0; index < msgArr.length; index++) {
+                const msg = msgArr[index];
+                '<li class="right clearfix">' +
+                    '<span class="chat-img pull-right">' +
+                    '<img src="http://placehold.it/50/FA6F57/fff&text=' + msg.name + '" alt="User Avatar" class="img-circle" />' +
+                    '</span>' + ' <div class="chat-body clearfix">' + '<div class="header">' +
+                    ' <strong class="pull-right primary-font">Bhaumik Patel</strong>' + ' </div>' +
+                    '<p id="messageCont">' + msg.content + '</p>' + '</div></li>';
+            }
+            newChat.innerHTML += str;
+        }
+        function AddMSG() {
+            let msg = document.getElementById("message").value;
+            let name = user.Name;
+            console.log(name);
+            console.log(msg);
+            ref.push().set({ "msg": msg, "name": name });
+        }
+
     </script>
+
 
     <!-- Carousel Scripts js-->
     <!-- End of Carousel Scripts -->
@@ -481,6 +581,45 @@
             <!-- ICON -->
             <div id="ph-present"> </div>
             <div id="ph-actors"></div>
+            <div id="ph-div">
+                <div class="row form-group">
+                    <div class="col-xs-12 col-md-offset-2 col-md-8 col-lg-8 col-lg-offset-2">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <span class="glyphicon glyphicon-comment"></span> Comments
+
+                            </div>
+                            <div class="panel-body body-panel">
+                                <ul id="newChat" class="chat">
+
+                                    <li class="right clearfix">
+                                        <span class="chat-img pull-right">
+                                            <img src="http://placehold.it/50/FA6F57/fff&text=ME" alt="User Avatar" class="img-circle" />
+                                        </span>
+                                        <div class="chat-body clearfix">
+                                            <div class="header">
+                                                <strong class="pull-right primary-font">Bhaumik Patel</strong>
+                                            </div>
+                                            <p id="messageCont">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
+                                                dolor, quis ullamcorper ligula sodales.
+                                            </p>
+                                        </div>
+                                    </li>
+
+
+                                </ul>
+                            </div>
+                            <div class="panel-footer clearfix">
+                                <input type="text" id="message" class="form-control" rows="3" />
+                                <span class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-xs-12" style="margin-top: 10px">
+                                    <button class="btn btn-warning btn-lg btn-block" onclick="AddMSG()" id="btn-chat">Send</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Heading-->
 
 
@@ -493,6 +632,7 @@
         <div id="ph-seasons"> </div>
         <div id="ph-present1"> </div>
         <div id="ph-eps"> </div>
+        <div id="ph-spd"> </div>
 
         <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
     </div>
@@ -822,121 +962,5 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-
-    <!-- END PAGE SOURCE -->
-    <!--<div id="ph">
-    </div>-->
-    <!--Carousel Slider -->
-    <!--<section class="page-section mb-0" id="main">
-        <div class="container">
-            - <div class="container testimonial-group"
-            <h2 class="page-section-heading text-uppercase text-white">Popular now</h2>
-            <div class="row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow" id="ph">
-
-
-                <div class="card card-block mx-2" style="width:18rem;background-color:rgba(255,255,255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3>Cow 1</h3>
-                        <p> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255,255,255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-
-                <div class="card seriesCard card-block mx-2" style="width:18rem;background-color:rgba(255, 255, 255,0.8);">
-                    <img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top' alt='...' />
-                    <div class="card-body">
-                        <h3 class="card-title">Cow 1</h3>
-                        <p class="card-text"> much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting much information about nothing interesting </p>
-                    </div>
-                </div>
-            </div>
-        </div>-->
-    <!-- End of Carousel Slider -->
-    <!-- Users Online Table-->
-    <!--<div id="statusTbl">
-        <h2 id="statusData">Users online:</h2>
-        <table id="statusTable" class="display nowrap" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-        </table>
-    </div>-->
 </body>
 </html>
-
-<!--
-                    <div id="ph" class="row text-center">
-
-                    </div>-->
