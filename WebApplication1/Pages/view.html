@@ -9,8 +9,6 @@
 
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
-
-
     <script src="../Scripts/ajaxCalls.js"></script>
     <style type="text/css">
         #ph > img {
@@ -136,6 +134,7 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 
+
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
@@ -154,6 +153,18 @@
     <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
     <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <!--**** Remember to add the database script ***-->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/status.js"></script>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <script>
 
@@ -245,12 +256,12 @@
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
                 str += "<div class='movie-image' id=" + eps[i].id + " style='overflow: hidden;'>";
                 if (eps[i].Img == "https://image.tmdb.org/t/p/w500/null")
-                str += "<image src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg'" + ">"
+                    str += "<image src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg'" + ">"
                 else
-                str += "<image class='card-img-top img-hover' src=" + eps[i].Img + ">";
+                    str += "<image class='card-img-top img-hover' src=" + eps[i].Img + ">";
                 str += "<h3 class='card-title text-center'>" + eps[i].SerName + "</h3>";
                 str += "<h5 class='card-title text-center'>" + "Season " + eps[i].SeasonNum + "</h5>";
-                str += "<h5 class='card-text text-center'>" + eps[i].EpName  + "</h5>";
+                str += "<h5 class='card-text text-center'>" + eps[i].EpName + "</h5>";
 
                 str += "</div></div>";
             }
@@ -261,9 +272,6 @@
         function getEpisodesBySerErrorCB(err) {
             console.log(err);
         }
-
-
-
     </script>
 </head>
 <!-- BODY -->
@@ -315,6 +323,7 @@
     <!-- RENDERING -->
     <div class="container">
         <div id="ph"><div class="bigger"><h3 class="text-dark text-center">Choose a TV-Show to Present</h3></div> </div>
+        <div id="ph-status" class="makeitabstract"></div>
     </div>
 
 

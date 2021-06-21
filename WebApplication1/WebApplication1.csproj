@@ -188,6 +188,7 @@
     <Content Include="Pages\homePage.html" />
     <Content Include="Pages\insert.html" />
     <Content Include="Pages\serieses.html" />
+    <Content Include="js\status.js" />
     <Content Include="Pages\view.html" />
     <Content Include="Pages\viewSerPage.html" />
     <Content Include="Scripts\ajaxCalls.js" />
