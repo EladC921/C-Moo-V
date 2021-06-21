@@ -192,14 +192,13 @@
             })
             renAirToday();
             renDis();
-
             ph_status = document.getElementById("ph-status");
             ph_status.innerHtml = "";
             //FireBase users status
             // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             usersOnline = [];
             /*online = false;
-console.log(firebase);*/
+            console.log(firebase);*/
             uref = firebase.database().ref("status");
             /*//amOnline = firebase.database().ref("connected/userId/" + user.Id);
             Join();
@@ -225,6 +224,7 @@ console.log(firebase);*/
             // This is where we will store data about being online/offline.
             var userStatusDatabaseRef = firebase.database().ref('/status/' + uid);
 
+
             // We'll create two constants which we will write to
             // the Realtime database when this device is offline
             // or online.
@@ -246,7 +246,8 @@ console.log(firebase);*/
 
             //Listen to users logging in and out
             listenToUsersConnection();
-            listenToUsersLogout();
+            //listenToUsersLogout();
+            setInterval(() => { readParticipants(); }, 10000);
 
             // Create a reference to the special '.info/connected' path in
             // Realtime Database. This path returns `true` when connected
@@ -335,10 +336,6 @@ console.log(firebase);*/
 
         //Update FireBase whenever user's logging out
         function listenToUsersLogout() {
-            /*uref.onDisconnect(function () {
-                online = false;
-                Join();
-            })*/
             uref.on("child_removed", snapshot => {
                 usersOnline = usersOnline.filter(m => m.userId != snapshot.val().userId);
                 // re-render the messages
@@ -350,49 +347,34 @@ console.log(firebase);*/
         function printUsersOnline(par) {
             console.log("checkpoint: user is online");
             //if (par.userStatus == 'online')
-            ph_status.innerHTML += "<li class='list-group-item'>" + par.userName + " - online</li>";
+            ph_status.innerHTML += "<li>" + par.userName + " - online </li>";
 
         }
 
         //Update the users online on the screen if a user's logging out
         function updateUsersOnline(usersOnline) {
-          var str = "<ul class='list-group'>";
-            var str = '';
+            var str = "<ul class='list-group'>";
             for (let i = 0; i < usersOnline.length; i++) {
                 const uOnline = usersOnline[i];
-                str += "<li class='list-group-item'>" + uOnline.userName + " - online</li>";
+                str += "<li>" + uOnline.userName + " - online </li>";
             }
             str += "</ul>";
 
             ph_status.innerHTML = str;
         }
 
-        /*
-        function Join() {
-            if (online == false) {
-                online = true;
-                uref.push().set({ "userName": user.Name, "userId": user.Id });
-            }
-            else {
-                online = false;
-                uref.orderByChild("userId").equalTo(user.Id).on("child_added", function (snapshot) {
-                    console.log(snapshot.val());
-                    uref.child(snapshot.key).remove();
-                    readParticipants();
-                })
-            }
-        }
-        */
-        //
         function readParticipants() {
+            console.log("read users online");
             parArr = [];
             uref.once("value", snapshot => {
                 snapshot.forEach(element => {
                     par = {
-                        userName: element.val().userName,
-                        userId: element.val().userId
+                        userStatus: element.val().state,
+                        userName: element.val().name,
+                        userId: element.val().id
                     }
-                    parArr.push(par);
+                    if (par.userStatus == 'online')
+                        parArr.push(par);
                 });
                 updateUsersOnline(parArr);
             })
@@ -558,7 +540,7 @@ console.log(firebase);*/
                 alert(err);
             }
         }
-                                                    // ~~~~~~~~~~~~~~~~~~~~~~~~~~ /USERS STATUS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~ /USERS STATUS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     </script>
 </head>
@@ -582,7 +564,6 @@ console.log(firebase);*/
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item mx-0 mx-lg-1" id="view"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">View My Episodes</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">About</a></li>
                     <li class="nav-item mx-0 mx-lg-1" id="logout"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">Logout</a></li>
                 </ul>
             </div>

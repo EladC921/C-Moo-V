@@ -11710,12 +11710,14 @@ padding-top: 2%;
 }
 
 .makeitabstract {
-    background-color:lightgrey;
-    color:green;
+    color: green;
+    background-color: lightgrey;
     font-size: 15px;
-    position:fixed;
-    bottom:20px;
-    right:20px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding:1%;
+    padding-left:5px;
 }
 /* Show Series*/
 @import url("https://fonts.googleapis.com/css?family=Montserrat:300,400,700,800");
