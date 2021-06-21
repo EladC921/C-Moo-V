@@ -322,10 +322,10 @@
             ajaxCall("GET", api, "", getDisCB, error);
         }
 
-        //render the POPULAR tv shows
+        //render the TOP RATED tv shows
         function getDisCB(obj) {
 
-            //~~~~~~~~~~~~~~~~~~~~~~~~~ /POPULAR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //~~~~~~~~~~~~~~~~~~~~~~~~~ /TOP RATED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < obj.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
@@ -338,7 +338,7 @@
             }
             str += '</div></div></section>';
             $("#ph1").html(str);
-            //~~~~~~~~~~~~~~~~~~~~~~~~~ /POPULAR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //~~~~~~~~~~~~~~~~~~~~~~~~~ /TOP RATED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
         //change status to Offline after Logout success
@@ -511,7 +511,7 @@
         </h1>
         <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div></div>
         <h1 class="masthead-heading text-uppercase mb-0">
-            POPULAR
+            TOP RATED
         </h1>
         <div id="ph1"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
         <div id="ph-status"></div>
