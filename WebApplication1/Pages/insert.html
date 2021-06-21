@@ -166,6 +166,7 @@
     <!-- TODO: Add SDKs for Firebase products that you want to use
          https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src='https://www.firebase.com/js/libs/idle.js'></script> <!-- idle check -->
     <script src="../js/config.js"></script>
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <script>
@@ -192,18 +193,105 @@
             renAirToday();
             renDis();
 
+            ph_status = document.getElementById("ph-status");
+            ph_status.innerHtml = "";
             //FireBase users status
-            online = false;
+            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             usersOnline = [];
-            console.log(firebase)
-            uref = firebase.database().ref("users-online");
+            /*online = false;
+console.log(firebase);*/
+            uref = firebase.database().ref("status");
+            /*//amOnline = firebase.database().ref("connected/userId/" + user.Id);
+            Join();
             // listen to incoming messages
             listenToUsersConnection();
             // listen to removing messages
             listenToUsersLogout();
-            ph_status = document.getElementById("ph-status");
             //loadUsersOnline();
 
+            uref.onDisconnect(() => {
+                uref.orderByChild("userId").equalTo(user.Id).on("child_added", function (snapshot) {
+                    console.log(snapshot.val());
+                    uref.child(snapshot.key).remove();
+                    readParticipants();
+                });
+            });*/
+
+            //==============================================================
+            // Fetch the current user's ID from Firebase Authentication.
+            //var uid = firebase.auth().currentUser.uid;
+            var uid = user.Id
+            // Create a reference to this user's specific status node.
+            // This is where we will store data about being online/offline.
+            var userStatusDatabaseRef = firebase.database().ref('/status/' + uid);
+
+            // We'll create two constants which we will write to
+            // the Realtime database when this device is offline
+            // or online.
+            var isOfflineForDatabase = {
+                state: 'offline',
+                name: user.Name,
+                id: user.Id,
+                last_changed: firebase.database.ServerValue.TIMESTAMP,
+            };
+
+            var isOnlineForDatabase = {
+                state: 'online',
+                name: user.Name,
+                id: user.Id,
+                last_changed: firebase.database.ServerValue.TIMESTAMP,
+            };
+
+            //Listen to users logging in and out
+            listenToUsersConnection();
+            listenToUsersLogout();
+
+            // Create a reference to the special '.info/connected' path in
+            // Realtime Database. This path returns `true` when connected
+            // and `false` when disconnected.
+            firebase.database().ref('.info/connected').on('value', function (snapshot) {
+                // If we're not currently connected, don't do anything.
+                if (snapshot.val() == false) {
+                    return;
+                };
+                console.log(snapshot);
+                // If we are currently connected, then use the 'onDisconnect()'
+                // method to add a set which will only trigger once this
+                // client has disconnected by closing the app,
+                // losing internet, or any other means.
+                userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(function () {
+                    // The promise returned from .onDisconnect().set() will
+                    // resolve as soon as the server acknowledges the onDisconnect()
+                    // request, NOT once we've actually disconnected:
+                    // https://firebase.google.com/docs/reference/js/firebase.database.OnDisconnect
+
+                    // We can now safely set ourselves as 'online' knowing that the
+                    // server will mark us as offline once we lose connection.
+                    userStatusDatabaseRef.set(isOnlineForDatabase);
+                    console.log("checkpoint: on disconnect");
+                    console.log(usersOnline);
+                });
+            });
+            //==========================================
+            /* amOnline.on('value', function (snapshot) {
+                 if (snapshot.val()) {
+                     uref.onDisconnect().set('☆ offline');
+                     uref.set('★ online');
+                 }
+             });
+             document.onIdle = function () {
+                 uref.set('☆ idle');
+             }
+             document.onAway = function () {
+                 uref.set('☄ away');
+             }
+             document.onBack = function (isIdle, isAway) {
+                 uref.set('★ online');
+             }*/
+            console.log(uref)
+
+
+            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             $("#getTV").click(getTV);
 
             //key from tmdb
@@ -226,22 +314,29 @@
         }
 
 
-
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIREBASE METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //Update FireBase whenever user's logging in
         function listenToUsersConnection() {
             uref.on("child_added", snapshot => {
                 let par = {
+                    userStatus: snapshot.val().state,
                     userName: snapshot.val().name,
-                    userStatus: snapshot.val().status,
-                    userId: snapshot.val().userId
+                    userId: snapshot.val().id
                 }
-                usersOnline.push(par);
-                printUsersOnline(par);
+                console.log(par);
+                if (par.userStatus == 'online') {
+                    usersOnline.push(par);
+                    printUsersOnline(par);
+                }
             })
         }
 
         //Update FireBase whenever user's logging out
         function listenToUsersLogout() {
+            /*uref.onDisconnect(function () {
+                online = false;
+                Join();
+            })*/
             uref.on("child_removed", snapshot => {
                 usersOnline = usersOnline.filter(m => m.userId != snapshot.val().userId);
                 // re-render the messages
@@ -251,36 +346,39 @@
 
         //print to screen the users online list
         function printUsersOnline(par) {
-            if (par.userStatus == 'online')
-                ph_status.innerHTML += par.name + " - online";
+            console.log("checkpoint: user is online");
+            //if (par.userStatus == 'online')
+            ph_status.innerHTML += par.userName + "- online";
         }
 
         //Update the users online on the screen if a user's logging out
         function updateUsersOnline(usersOnline) {
-            var str = "";
+            var str = "<ul class='list-group'>";
             for (let i = 0; i < usersOnline.length; i++) {
                 const uOnline = usersOnline[i];
-                str += uOnline.name + " - online";
+                str += "<li class='list-group-item'>" + uOnline.userName + " - online</li>";
             }
+            str += "</ul>";
+
             ph_status.innerHTML = str;
         }
 
-        //
+        /*
         function Join() {
             if (online == false) {
                 online = true;
-                uref.push().set({ "userName": name, "userStatus": "online", "userId": user.Id });
+                uref.push().set({ "userName": user.Name, "userId": user.Id });
             }
             else {
                 online = false;
                 uref.orderByChild("userId").equalTo(user.Id).on("child_added", function (snapshot) {
-                    //console.log(snapshot.key);
+                    console.log(snapshot.val());
                     uref.child(snapshot.key).remove();
                     readParticipants();
                 })
             }
         }
-
+        */
         //
         function readParticipants() {
             parArr = [];
@@ -288,7 +386,6 @@
                 snapshot.forEach(element => {
                     par = {
                         userName: element.val().userName,
-                        userStatus: element.val().userStatus,
                         userId: element.val().userId
                     }
                     parArr.push(par);
@@ -296,17 +393,19 @@
                 updateUsersOnline(parArr);
             })
         }
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIREBASE METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
         //render the "air today" tv shows
         function getAirCB(obj) {
 
             //~~~~~~~~~~~~~~~~~~~~~~~~~ ON AIR TODAY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
+            let str = "<section class='page-section mb-0'><div class='container'> <div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < obj.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
                 str += "<div class='movie-image' id=" + obj.results[i].id + " style='overflow: hidden;'>";
-                if (obj.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item w-100' alt=''/> ";
-                else str += "<img src='" + imagePath + obj.results[i].poster_path + "' onclick='randSeasons(" + obj.results[i].id + ")' class='card-img-top img-hover w-100' alt=''/> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
+                if (obj.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item w-100' alt='' /> ";
+                else str += "<img src='" + imagePath + obj.results[i].poster_path + "' onclick='randSeasons(" + obj.results[i].id + ")' class='card-img-top img-hover w-100' alt='' /> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
                 str += "<h4 class='card-title text-center'>" + obj.results[i].name + "</h4>";
                 str += "</div></div>";
                 //$("#seasonDiv").append(str);
@@ -330,8 +429,8 @@
             for (var i = 0; i < obj.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
                 str += "<div class='movie-image' id=" + obj.results[i].id + " style='overflow: hidden;'>";
-                if (obj.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item w-100' alt=''/> ";
-                else str += "<img src='" + imagePath + obj.results[i].poster_path + "' onclick='randSeasons(" + obj.results[i].id + ")' class='card-img-top img-hover w-100' alt=''/> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
+                if (obj.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item w-100' alt='' /> ";
+                else str += "<img src='" + imagePath + obj.results[i].poster_path + "' onclick='randSeasons(" + obj.results[i].id + ")' class='card-img-top img-hover w-100' alt='' /> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
                 str += "<h4 class='card-title text-center'>" + obj.results[i].name + "</h4>";
                 str += "</div></div>";
                 //$("#seasonDiv").append(str);
@@ -372,12 +471,12 @@
             console.log("Results:")
             console.log(tv.results)
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV SEARCH RESAULTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
+            let str = "<section class='page-section mb-0' ><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < tv.results.length; i++) {
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
                 str += "<div class='movie-image' id=" + tv.results[i].id + " style='overflow: hidden;'>";
-                if (tv.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' onclick='randSeasons(" + tv.results[i].id + ")' class='card-img-top item w-100' alt=''/> ";
-                else str += "<img src='" + imagePath + tv.results[i].poster_path + "' onclick='randSeasons(" + tv.results[i].id + ")' class='card-img-top img-hover w-100' alt=''/> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
+                if (tv.results[i].poster_path == null) str += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' onclick='randSeasons(" + tv.results[i].id + ")' class='card-img-top item w-100' alt='' /> ";
+                else str += "<img src='" + imagePath + tv.results[i].poster_path + "' onclick='randSeasons(" + tv.results[i].id + ")' class='card-img-top img-hover w-100' alt='' /> "; //make a clickable img of the TV Show, if there's no photo then put a generic one
                 str += "<h4 class='card-title text-center'>" + tv.results[i].name + "</h4>";
                 str += "</div></div>";
                 //$("#seasonDiv").append(str);
@@ -455,7 +554,7 @@
                 alert(err);
             }
         }
-                // ~~~~~~~~~~~~~~~~~~~~~~~~~~ /USERS STATUS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                    // ~~~~~~~~~~~~~~~~~~~~~~~~~~ /USERS STATUS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     </script>
 </head>
