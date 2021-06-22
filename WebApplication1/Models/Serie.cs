@@ -36,10 +36,10 @@ namespace WebApplication1.Models
             return 1;
         }
 
-        public List<Serie> Get(int uId)
+        public List<Serie> Get(int uId, string type)
         {
             DataServices ds = new DataServices();
-            return ds.GetSerPref(uId);
+            return ds.GetSerPref(uId, type);
         }
 
     }

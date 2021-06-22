@@ -491,7 +491,9 @@
         function init() {
             msgArr = [];
             console.log(Tv.Name);
-            ref = firebase.database().ref(Tv.Name);
+            tvNameRegex = Tv.Name.replace(/[^a-zA-Z ]/g, "");
+            console.log("check -" + tvNameRegex);
+            ref = firebase.database().ref(tvNameRegex);
             // listen to incoming messages
             listenToNewMessages();
             // listen to removing messages

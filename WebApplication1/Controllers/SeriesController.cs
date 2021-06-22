@@ -11,14 +11,11 @@ namespace WebApplication1.Controllers
     public class SeriesController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<Serie> Get(int uId)
+        public IEnumerable<Serie> Get(int uId, string type)
         {
             Serie ser = new Serie();
-            return ser.Get(uId);
-        }
-
-        // GET api/<controller>/5
-      
+            return ser.Get(uId, type);
+        }      
 
         // POST api/<controller>
         public int Post([FromBody] Serie ser)

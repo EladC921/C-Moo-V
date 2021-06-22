@@ -10,7 +10,7 @@ namespace WebApplication1.Controllers
 {
     public class PreferencesController : ApiController
     {
-        // GET api/<controller>
+        // GET api/<controller>?type='hello world'
         public IEnumerable<Preference> Get(string type)
         {
             Preference p = new Preference();

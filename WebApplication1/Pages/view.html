@@ -215,7 +215,7 @@
         }
 
         function getSer() {
-            let api = "../api/Series?uId=" + JSON.parse(localStorage.getItem("user")).Id;
+            let api = "../api/Series?uId=" + JSON.parse(localStorage.getItem("user")).Id + "&type=pref";
             ajaxCall("GET", api, "", getSerSuccessCB, getSerErrorCB)
         }
 
