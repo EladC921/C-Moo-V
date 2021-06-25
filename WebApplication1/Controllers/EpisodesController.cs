@@ -36,8 +36,10 @@ namespace WebApplication1.Models
         }
 
         // DELETE api/<controller>/5
-        public void Delete(int id)
+        public void Delete(int uId, int eId)
         {
+            Episode ep = new Episode();
+            ep.Remove(uId, eId);
         }
     }
 }

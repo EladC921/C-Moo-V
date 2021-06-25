@@ -94,7 +94,7 @@ namespace WebApplication1.Models.DAL
                 Episode ep = obj as Episode;
                 sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')", ep.Id, ep.Id_ser, r.Replace(ep.EpName, ""), r.Replace(ep.SerName, ""), ep.SeasonNum, ep.Img, r.Replace(ep.Description, ""));
                 prefix = "INSERT INTO Episodes_2021 " + "([id], [id_ser] , [name], [sername], [season_num], [image], [description]) ";
-                commandPref = "INSERT INTO Preferences_2021 " + "([id_ep], [id_user], [id_ser]) " + "Values(" + ep.Id.ToString() + "," + ep.Id_user.ToString() + "," + ep.Id_ser.ToString() + ")";
+                commandPref = "INSERT INTO Preferences_2021 " + "([id_ep], [id_user], [id_ser], [active]) " + "Values(" + ep.Id.ToString() + "," + ep.Id_user.ToString() + "," + ep.Id_ser.ToString() + ", 1)";
             }
             else if (obj is Serie)
             {
@@ -102,8 +102,6 @@ namespace WebApplication1.Models.DAL
                 sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')", ser.Id, ser.First_air_date, r.Replace(ser.Name, ""), ser.Origin_country, ser.Original_language, r.Replace(ser.Overview, ""), ser.Popularity, ser.Poster_path);
                 prefix = "INSERT INTO Series_2021 " + "([id], [first_air_date], [name], [origin_country], [original_language], [overview], [popularity], [poster_path]) ";
             }
-
-
             else
             {
                 User u = obj as User;
@@ -199,23 +197,23 @@ namespace WebApplication1.Models.DAL
                 String selectSTR;
                 if (type.Equals("pref"))
                     selectSTR = "SELECT DISTINCT S.id 'id_ser', S.first_air_date ,S.name, S.origin_country, S.original_language,  CAST(S.overview AS NVARCHAR(4000)) 'overview', S.popularity, CAST(S.poster_path AS nvarchar(500)) 'poster_path' "
-                               + "FROM Preferences_2021 P inner join Episodes_2021 E on P.id_ep = E.id inner join Series_2021 S on E.id_ser = S.id WHERE P.id_user = " + uId;
+                               + "FROM Preferences_2021 P inner join Episodes_2021 E on P.id_ep = E.id inner join Series_2021 S on E.id_ser = S.id WHERE P.active = 1 AND P.id_user = " + uId;
                 else
                     selectSTR = "Declare @id int SET @id =" + uId + " "
                                 + "SELECT TOP(5) COUNT(P.id_user) 'num of users', P.id_ser, S.first_air_date, S.name , S.origin_country, S.original_language, CAST(S.overview AS NVARCHAR(4000)) 'overview', S.popularity, CAST(S.poster_path AS nvarchar(500)) 'poster_path' "
-                                + "FROM(SELECT DISTINCT id_user, id_ser FROM Preferences_2021) P inner join Series_2021 S on S.id = P.id_ser "
+                                + "FROM(SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P inner join Series_2021 S on S.id = P.id_ser "
                                 + "WHERE P.id_user != @id AND P.id_ser != ALL( "
                                                                               + "SELECT P1.id_ser "
-                                                                              + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021) P1 "
+                                                                              + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P1 "
                                                                               + "WHERE  P1.id_user=P.id_user AND EXISTS("
                                                                                                                          + "SELECT P0.id_user "
-                                                                                                                         + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021) P0 "
+                                                                                                                         + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P0 "
                                                                                                                          + "WHERE P0.id_user = @id AND P0.id_ser = P1.id_ser)"
                                 + ") AND P.id_user in ("
-                                                        + "SELECT P2.id_user FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021) P2 "
+                                                        + "SELECT P2.id_user FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P2 "
                                                         + "WHERE P2.id_user!=@id AND EXISTS("
                                                                                             + "SELECT P3.id_user "
-                                                                                            + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021) P3 "
+                                                                                            + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P3 "
                                                                                             + "WHERE P3.id_user = @id AND P3.id_ser = P2.id_ser)) "
                                 + "GROUP BY P.id_ser, S.first_air_date, S.name , S.origin_country, S.original_language, CAST(S.overview AS NVARCHAR(4000)), S.popularity, CAST(S.poster_path AS nvarchar(500)) "
                                 + "ORDER BY 'num of users' DESC";
@@ -265,7 +263,7 @@ namespace WebApplication1.Models.DAL
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT E.* FROM Preferences_2021 P inner join Episodes_2021 E on P.id_ep = E.id inner join Series_2021 S on E.id_ser = S.id WHERE P.id_user =" + uId + " AND S.id = " + sId;
+                String selectSTR = "SELECT E.* FROM Preferences_2021 P inner join Episodes_2021 E on P.id_ep = E.id inner join Series_2021 S on E.id_ser = S.id WHERE P.active = 1 AND P.id_user =" + uId + " AND S.id = " + sId;
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
                 // get a reader
@@ -366,8 +364,8 @@ namespace WebApplication1.Models.DAL
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
                 String selectSTR = "";
                 selectSTR = (string.Equals(type, "Episodes")) ?
-                      "SELECT S.name 'Series Name', E.name 'Episode Name', COUNT(P.id_user) 'num of users' FROM Series_2021 S inner join Episodes_2021 E on E.id_ser = S.id inner join Preferences_2021 P on E.id = P.id_ep GROUP BY S.name, E.name Order BY[num of users] DESC" :
-                      "SELECT id_ser, S.name 'Series Name', COUNT(id_user) 'num of users' FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021) P inner join Series_2021 S on P.id_ser = S.id  GROUP BY id_ser, S.name Order BY[num of users] DESC";
+                      "SELECT S.name 'Series Name', E.name 'Episode Name', COUNT(P.id_user) 'num of users' FROM Series_2021 S inner join Episodes_2021 E on E.id_ser = S.id inner join Preferences_2021 P on E.id = P.id_ep WHERE P.active = 1 GROUP BY S.name, E.name Order BY[num of users] DESC" :
+                      "SELECT id_ser, S.name 'Series Name', COUNT(id_user) 'num of users' FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P inner join Series_2021 S on P.id_ser = S.id  GROUP BY id_ser, S.name Order BY[num of users] DESC";
 
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
@@ -463,18 +461,51 @@ namespace WebApplication1.Models.DAL
                 }
                 return 1;
             }
-
         }
 
+        public void RemoveEp(int uId, int eId)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
 
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
 
+            String cStr = "UPDATE Preferences_2021 SET active = 0 WHERE id_ep = " + eId + " AND id_user = " + uId; //string command
 
+            cmd = CreateCommand(cStr, con);             // create the command
 
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            }
+            catch (SqlException ex)
+            {
+                //To check if there is viaolation of mult emails of keys
+                if (ex.Number != 2627 && ex.Number != 2601)
+                    throw;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
 
-
-
-
-
-
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+        }
     }
 }

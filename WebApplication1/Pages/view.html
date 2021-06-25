@@ -185,8 +185,8 @@
 
             //logout -> clear localStorage and return to homepage
             $("#logout").click(function () {
-                api = "../api/Users/" + user.Id + "?status=Logout";
-                ajaxCall("PUT", api, "", changeStatusSuccessCB, error);
+                localStorage.clear();
+                window.location.href = "homePage.html";
             })
 
             //loadUsersOnline();
@@ -206,16 +206,13 @@
                 window.location.href = "insert.html";
             })
         });
-        function changeStatusSuccessCB() {
-            localStorage.clear();
-            window.location.href = "homePage.html";
-        }
+
         function error(err) {
             console.log(err);
         }
 
         function getSer() {
-            let api = "../api/Series?uId=" + JSON.parse(localStorage.getItem("user")).Id + "&type=pref";
+            let api = "../api/Series?uId=" + user.Id + "&type=pref";
             ajaxCall("GET", api, "", getSerSuccessCB, getSerErrorCB)
         }
 
@@ -236,25 +233,22 @@
             console.log(err);
         }
 
-
-
-        function renderEpsBySer(opt) {
-            console.log(opt);
-            let api = "../api/Episodes?uId=" + JSON.parse(localStorage.getItem("user")).Id + "&sId=" + opt;
-            ajaxCall("GET", api, "", getEpisodesBySerSuccessCB, getEpisodesBySerErrorCB)
+        //Ajax call to Episodes by user id preferences
+        function renderEpsBySer(option) {
+            console.log(option);
+            opt = option; //make it global
+            let api = "../api/Episodes?uId=" + user.Id + "&sId=" + opt;
+            ajaxCall("GET", api, "", getEpisodesBySerSuccessCB, error)
         }
 
+        //Get episodes of series Success
         function getEpisodesBySerSuccessCB(eps) {
             console.log(eps)
             let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < eps.length; i++) {
-                //str += "<div class='epsOpt'><p><b>Series Name:</b> " + eps[i].SerName + "</p>";
-                //str += "<p><b>Episode Name:</b> " + eps[i].EpName + "</p>";
-                //str += "<p><b>Season Number:</b> " + eps[i].SeasonNum + "</p>";
-                //str += "<image src=" + eps[i].Img + ">";
-                //str += "<p><b>Description:</b> " + eps[i].Description + "</p></div>";
+                id = eps[i].Id;
                 str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
-                str += "<div class='movie-image' id=" + eps[i].id + " style='overflow: hidden;'>";
+                str += "<div class='movie-image' id=" + id + " style='overflow: hidden;'>";
                 if (eps[i].Img == "https://image.tmdb.org/t/p/w500/null")
                     str += "<image src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg'" + ">"
                 else
@@ -262,15 +256,29 @@
                 str += "<h3 class='card-title text-center'>" + eps[i].SerName + "</h3>";
                 str += "<h5 class='card-title text-center'>" + "Season " + eps[i].SeasonNum + "</h5>";
                 str += "<h5 class='card-text text-center'>" + eps[i].EpName + "</h5>";
-
-                str += "</div></div>";
+         
+                str += "<div class='card-body'><button class='bg-but text-white btn btn-xl btn-outline-secondary' onclick='removeEp(" + id + ")'>Remove</button>"; //insert episode button
+                str += "</div></div></div>";
             }
 
             $("#ph").html(str);
         }
 
-        function getEpisodesBySerErrorCB(err) {
+        //CB error
+        function error(err) {
             console.log(err);
+        }
+
+        //Remove episode from list
+        function removeEp(eId) {
+            console.log(eId);
+            let api = "../api/Episodes?uId=" + user.Id + "&eId=" + eId;
+            ajaxCall("DELETE", api, "", deleteEpSuccessCB, error)
+        }
+
+        //delete success
+        function deleteEpSuccessCB() {
+            renderEpsBySer(opt); //re-rendering eps
         }
     </script>
 </head>

@@ -185,8 +185,8 @@
 
             //logout -> clear localStorage and return to homepage
             $("#logout").click(function () {
-                api = "../api/Users/" + user.Id + "?status=Logout";
-                ajaxCall("PUT", api, "", changeStatusSuccessCB, error);
+                localStorage.clear();
+                window.location.href = "homePage.html";
             });
 
             //render tv shows (of website, without searching)
@@ -292,12 +292,6 @@
             let str = getPrint(obj.results);
             $("#ph1").html(str);
             //~~~~~~~~~~~~~~~~~~~~~~~~~ /TOP RATED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        }
-
-        //change status to Offline after Logout success
-        function changeStatusSuccessCB() {
-            localStorage.clear();
-            window.location.href = "homePage.html";
         }
 
         //Global error method

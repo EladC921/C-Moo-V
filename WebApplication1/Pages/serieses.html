@@ -9,9 +9,6 @@
 
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
-
-
-
     <script src="../Scripts/ajaxCalls.js"></script>
     <style type="text/css">
         #ph > img {
@@ -40,8 +37,8 @@
             height: 70%;
         }
         /* .overflow-scroll {
-          white-space: pre-wrap
-        }*/
+                white-space: pre-wrap
+              }*/
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Carousel - Style ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
         /* The heart of the matter */
         .testimonial-group > .row {
@@ -86,13 +83,13 @@
             box-sizing: border-box;
         }
         /* .row > .col {
-            width: 100%;
-            display: block;
-        }
+                  width: 100%;
+                  display: block;
+              }
 
-        .col img {
-            height: auto;
-        }*/
+              .col img {
+                  height: auto;
+              }*/
 
         /* Decorations */
         .col-xs-4 {
@@ -173,6 +170,101 @@
                 font-family: sans-serif Lato;
                 font-size: 15px;
             }
+
+        body {
+            margin-top: 20px;
+        }
+
+        /*==================================================
+        Post Contents CSS
+        ==================================================*/
+
+        .post-content {
+            background: #f8f8f8;
+            border-radius: 4px;
+            width: 100%;
+            border: 1px solid #f1f2f2;
+            margin-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .post-content img.post-image, video.post-video, .google-maps {
+                width: 100%;
+                height: auto;
+            }
+
+            .post-content .google-maps .map {
+                height: 300px;
+            }
+
+            .post-content .post-container {
+                padding: 20px;
+            }
+
+                .post-content .post-container .post-detail {
+                    margin-left: 65px;
+                    position: relative;
+                }
+
+                    .post-content .post-container .post-detail .post-text {
+                        line-height: 24px;
+                        margin: 0;
+                    }
+
+                    .post-content .post-container .post-detail .reaction {
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                    }
+
+                    .post-content .post-container .post-detail .post-comment {
+                        display: inline-flex;
+                        margin: 10px auto;
+                        width: 100%;
+                    }
+
+                        .post-content .post-container .post-detail .post-comment img.profile-photo-sm {
+                            margin-right: 10px;
+                        }
+
+                        .post-content .post-container .post-detail .post-comment .form-control {
+                            height: 30px;
+                            border: 1px solid #ccc;
+                            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+                            margin: 7px 0;
+                            min-width: 0;
+                        }
+
+        img.profile-photo-md {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+        }
+
+        img.profile-photo-sm {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .text-green {
+            color: #8dc63f;
+        }
+
+        .text-red {
+            color: #ef4136;
+        }
+
+        .following {
+            color: #8dc63f;
+            font-size: 12px;
+            margin-left: 20px;
+        }
+
+        .line-divider {
+            border: solid 1px;
+        }
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Carousel style ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     </style>
     <!-- ICON -->
@@ -250,8 +342,8 @@
             init();
             //logout -> clear localStorage and return to homepage
             $("#logout").click(function () {
-                api = "../api/Users/" + user.Id + "?status=Logout";
-                ajaxCall("PUT", api, "", changeStatusSuccessCB, error);
+                localStorage.clear();
+                window.location.href = "homePage.html";
             })
 
             //loadUsersOnline();
@@ -273,13 +365,6 @@
                 window.location.href = "insert.html";
             })
         });
-
-
-        //change status to Offline after Logout success
-        function changeStatusSuccessCB() {
-            localStorage.clear();
-            window.location.href = "homePage.html";
-        }
 
         //Global error method
         function error(err) {
@@ -356,7 +441,7 @@
                 str1 += "<div class='movie-image' id=" + id + " style='overflow: hidden;'>";
 
                 if (season.episodes[i].still_path == null) str1 += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item' alt=''/> ";//if there's no photo then put a generic one
-                else str1 += "<img src='" + imagePath + season.episodes[i].still_path + "' onclick='rendChat(" + i + ")'" + " class='card-img-top img-hover' alt=''/> ";
+                else str1 += "<img src='" + imagePath + season.episodes[i].still_path + "' onclick='rendChat(" + i + ")'" + " class='card-img-top img-hover'  alt=''/> ";
 
 
                 str1 += "<h4 class='card-title text-center'>" + season.episodes[i].episode_number + ". " + season.episodes[i].name + "</h4>"; //episode name
@@ -488,19 +573,28 @@
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
+
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE WORKAROUND ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //Initating the firebase and listeners
         function init() {
             msgArr = [];
             console.log(Tv.Name);
             tvNameRegex = Tv.Name.replace(/[^a-zA-Z ]/g, "");
             console.log("check -" + tvNameRegex);
             ref = firebase.database().ref(tvNameRegex);
+            refer = firebase.database().ref('/' + tvNameRegex + ' /' + 'comment');
+            repl = firebase.database().ref('/' + tvNameRegex + ' /' + 'reply');
             // listen to incoming messages
             listenToNewMessages();
-            // listen to removing messages
+            // listen to new comments
+            listenToNewComments();
+            listenToNewReplies();
 
 
         }
 
+        //Listen for new chat messages
         function listenToNewMessages() {
             // child_added will be evoked for every child that was added
             // on the first entry, it will bring all the childs
@@ -509,13 +603,38 @@
                     name: snapshot.val().name,
                     content: snapshot.val().msg,
                 }
-                msgArr.push(msg)
                 printMessage(msg);
             })
         }
 
+        //Listen for new posts
+        function listenToNewComments() {
+            // child_added will be evoked for every child that was added
+            // on the first entry, it will bring all the childs
+            refer.on("child_added", snapshot => {
+                cmnt = {
+                    name: snapshot.val().name,
+                    content: snapshot.val().comment,
+                    id: snapshot.val().id
+                }
+                printComment(cmnt);
+            })
+        }
 
+        //Listening to new replies for posts
+        function listenToNewReplies() {
+            repl.on("child_added", snapshot => {
+                replay = {
+                    name: snapshot.val().name,
+                    reply: snapshot.val().reply,
+                    id: snapshot.val().id
+                }
+                console.log(replay.reply);
+                printReply(replay);
+            })
+        }
 
+        //Printing the chat messages
         function printMessage(msg) {
             let str = '<li class="right clearfix">' +
                 '<span class="chat-img pull-right">' +
@@ -527,19 +646,88 @@
             newChat.innerHTML += str;
         }
 
-        function printMessages(msgArr) {
-            var str = "";
-            for (let index = 0; index < msgArr.length; index++) {
-                const msg = msgArr[index];
-                '<li class="right clearfix">' +
-                    '<span class="chat-img pull-right">' +
-                    '<img src="http://placehold.it/50/FA6F57/fff&text=' + msg.name + '" alt="User Avatar" class="img-circle" />' +
-                    '</span>' + ' <div class="chat-body clearfix">' + '<div class="header">' +
-                    ' <strong class="pull-right primary-font"</strong>' + ' </div>' +
-                    '<p id="messageCont">' + msg.content + '</p>' + '</div></li>';
-            }
-            newChat.innerHTML += str;
+        //Prints the replies for posts
+        function printReply(replay) {
+
+            let str = "";
+            str += '  <div class="post-comment form-control">\n' +
+                '                    <img src="https://cdn.discordapp.com/attachments/727187267788996640/854969393481646090/sacred-cow.png" alt="" class="profile-photo-sm">\n' +
+                '                    <p><a class="profile-link">' + replay.name + " :" + '</a>' + replay.reply + ' </p>\n' +
+                '                  </div>';
+
+
+            $('#' + replay.id + ' #usercommentsinsert').append(str);
         }
+
+        //Prints the posts
+        function printComment(cmnt) {
+
+            var id = cmnt.id.substring(cmnt.id.length - 19);
+            console.log("-------------------")
+            id = id.replace(/[^a-zA-Z ]/g, "");
+            id1 = id;
+            console.log(id);
+            ff = 3;
+            let str = "";
+            str = ' </div>\n' +
+                '                            <div class="container">\n' +
+                '                                <div class="row">\n' +
+                '                                    <div class="col-md-8">\n' +
+                '                                        <div class="post-content">\n' +
+                '\n' +
+                '                                            <div class="post-container">\n' +
+                '                                                <img src="https://cdn.discordapp.com/attachments/727187267788996640/854969393481646090/sacred-cow.png" alt="user" class="profile-photo-md pull-left">\n' +
+                '                                               <div id="' + id + '" class="post-detail">\n' +
+                '                                                    <div class="user-info">\n' +
+                '                                                        <h5 class="profile-link">' + cmnt.name + '</h5>\n' +
+                '\n' +
+                '                                                    </div>\n' +
+                '                                                    <div class="reaction">\n' +
+                '                                                        <a class="btn text-green"><i class="fa fa-thumbs-up"></i> 13</a>\n' +
+                '                                                        <a class="btn text-red"><i class="fa fa-thumbs-down"></i> 0</a>\n' +
+                '                                                    </div>\n' +
+                '                                                    <div class="line-divider"></div>\n' +
+                '                                                    <div class="post-text">\n' +
+                '                                                        <p>' + cmnt.content + '<i class="em em-anguished"></i> <i class="em em-anguished"></i> <i class="em em-anguished"></i></p>\n' +
+                '                                                    </div>\n' +
+                '                                                    <div class="line-divider"></div>\n' +
+                '                                                    <div id="usercommentsinsert">\n' +
+
+                '\n' +
+                '                                                    </div>\n' +
+                '                                                    <div class="post-comment">\n' +
+                '                                                        <img src="https://cdn.discordapp.com/attachments/727187267788996640/854969393481646090/sacred-cow.png" alt="" class="profile-photo-sm">\n' +
+                '                                                        <input type="text" id="pReply' + id + '" class="form-control" placeholder="Post a comment">\n' +
+                '                                                        <button class="btn btn-primary btn-xl enabled" id="submitButton" onClick="AddReply(' + "'" + id + "'" + ')" type="submit">Send</button>\n' +
+                '                                                    </div>\n' +
+                '                                                </div>\n' +
+                '                                            </div>\n' +
+                '                                        </div>\n' +
+                '                                    </div>\n' +
+                '                                </div>\n' +
+                '                            </div>\n' +
+                '';
+            $("#ph-sss").append(str);
+
+        }
+
+        //Pushes the posts and initiating the data to firebase
+        function AddPost() {
+            var myRef = refer.push();
+            keyto = myRef.getKey();
+            keyto = keyto.replace(/[^a-zA-Z ]/g, "");
+            console.log(keyto);
+
+            var newData = {
+                id: keyto,
+                comment: document.getElementById("pComment").value,
+                name: user.Name,
+            }
+            refer.push(newData);
+
+        }
+
+        //Pushes the chats and initiating the data to firebase
         function AddMSG() {
 
             let msg = document.getElementById("message").value;
@@ -549,6 +737,19 @@
             console.log(msg);
             ref.push().set({ "msg": msg, "name": name });
         }
+
+        //Pushes the replies and initiating the data to firebase
+        function AddReply(id) {
+            console.log(id);
+            let msg = document.getElementById("pReply" + id).value;
+            console.log(msg);
+
+
+            let name = user.Name;
+            repl.push().set({ "reply": msg, "name": name, "id": id });
+        }
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE WORKAROUND END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     </script>
 </head>
@@ -637,11 +838,28 @@
         </h1>
         <div id="ph-seasons"> </div>
         <div id="ph-present1"> </div>
-        <div id="ph-eps"> </div>
+        <div id="ph-eps">
+
+        </div>
         <div id="ph-spd"> </div>
-        <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
-        <div id="ph-status" class="makeitabstract"></div>
+        <!--The base of the comment section-->
+        <div id="ph-sss">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="post-content">
+                            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+                            <input id="pComment" type="text" class="form-control" placeholder="Create Post">
+                            <button class="btn btn-primary btn-xl enabled" id="submitButton" style="align-content:center" onclick="AddPost()" type="submit">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
+    <div id="ph-status" class="makeitabstract"></div>
+
     <!-- About Section-->
     <section class="page-section bg-primary text-white mb-0" id="about">
         <div class="container">
@@ -775,198 +993,8 @@
     <div class="copyright py-4 text-center text-white">
         <div class="container"><small>Copyright &copy; C-Moo-V 2021</small></div>
     </div>
-    <!-- Portfolio Modals-->
-    <!-- Portfolio Modal 1-->
-    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" aria-labelledby="portfolioModal1" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header border-0"><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                <div class="modal-body text-center pb-5">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <!-- Portfolio Modal - Title-->
-                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Log Cabin</h2>
-                                <!-- Icon Divider-->
-                                <div class="divider-custom">
-                                    <div class="divider-custom-line"></div>
-                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                                    <div class="divider-custom-line"></div>
-                                </div>
-                                <!-- Portfolio Modal - Image-->
-                                <img class="img-fluid rounded mb-5" src="../assets/img/portfolio/cabin.png" alt="..." />
-                                <!-- Portfolio Modal - Text-->
-                                <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-                                <button class="btn btn-primary" href="#!" data-bs-dismiss="modal">
-                                    <i class="fas fa-times fa-fw"></i>
-                                    Close Window
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Portfolio Modal 2-->
-    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" aria-labelledby="portfolioModal2" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header border-0"><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                <div class="modal-body text-center pb-5">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <!-- Portfolio Modal - Title-->
-                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Tasty Cake</h2>
-                                <!-- Icon Divider-->
-                                <div class="divider-custom">
-                                    <div class="divider-custom-line"></div>
-                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                                    <div class="divider-custom-line"></div>
-                                </div>
-                                <!-- Portfolio Modal - Image-->
-                                <img class="img-fluid rounded mb-5" src="../assets/img/portfolio/cake.png" alt="..." />
-                                <!-- Portfolio Modal - Text-->
-                                <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-                                <button class="btn btn-primary" href="#!" data-bs-dismiss="modal">
-                                    <i class="fas fa-times fa-fw"></i>
-                                    Close Window
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Portfolio Modal 3-->
-    <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" aria-labelledby="portfolioModal3" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header border-0"><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                <div class="modal-body text-center pb-5">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <!-- Portfolio Modal - Title-->
-                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Circus Tent</h2>
-                                <!-- Icon Divider-->
-                                <div class="divider-custom">
-                                    <div class="divider-custom-line"></div>
-                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                                    <div class="divider-custom-line"></div>
-                                </div>
-                                <!-- Portfolio Modal - Image-->
-                                <img class="img-fluid rounded mb-5" src="../assets/img/portfolio/circus.png" alt="..." />
-                                <!-- Portfolio Modal - Text-->
-                                <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-                                <button class="btn btn-primary" href="#!" data-bs-dismiss="modal">
-                                    <i class="fas fa-times fa-fw"></i>
-                                    Close Window
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Portfolio Modal 4-->
-    <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" aria-labelledby="portfolioModal4" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header border-0"><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                <div class="modal-body text-center pb-5">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <!-- Portfolio Modal - Title-->
-                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Controller</h2>
-                                <!-- Icon Divider-->
-                                <div class="divider-custom">
-                                    <div class="divider-custom-line"></div>
-                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                                    <div class="divider-custom-line"></div>
-                                </div>
-                                <!-- Portfolio Modal - Image-->
-                                <img class="img-fluid rounded mb-5" src="../assets/img/portfolio/game.png" alt="..." />
-                                <!-- Portfolio Modal - Text-->
-                                <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-                                <button class="btn btn-primary" href="#!" data-bs-dismiss="modal">
-                                    <i class="fas fa-times fa-fw"></i>
-                                    Close Window
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Portfolio Modal 5-->
-    <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" aria-labelledby="portfolioModal5" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header border-0"><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                <div class="modal-body text-center pb-5">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <!-- Portfolio Modal - Title-->
-                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Locked Safe</h2>
-                                <!-- Icon Divider-->
-                                <div class="divider-custom">
-                                    <div class="divider-custom-line"></div>
-                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                                    <div class="divider-custom-line"></div>
-                                </div>
-                                <!-- Portfolio Modal - Image-->
-                                <img class="img-fluid rounded mb-5" src="../assets/img/portfolio/safe.png" alt="..." />
-                                <!-- Portfolio Modal - Text-->
-                                <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-                                <button class="btn btn-primary" href="#!" data-bs-dismiss="modal">
-                                    <i class="fas fa-times fa-fw"></i>
-                                    Close Window
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Portfolio Modal 6-->
-    <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" aria-labelledby="portfolioModal6" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header border-0"><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
-                <div class="modal-body text-center pb-5">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <!-- Portfolio Modal - Title-->
-                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Submarine</h2>
-                                <!-- Icon Divider-->
-                                <div class="divider-custom">
-                                    <div class="divider-custom-line"></div>
-                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                                    <div class="divider-custom-line"></div>
-                                </div>
-                                <!-- Portfolio Modal - Image-->
-                                <img class="img-fluid rounded mb-5" src="../assets/img/portfolio/submarine.png" alt="..." />
-                                <!-- Portfolio Modal - Text-->
-                                <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
-                                <button class="btn btn-primary" href="#!" data-bs-dismiss="modal">
-                                    <i class="fas fa-times fa-fw"></i>
-                                    Close Window
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
+
 </body>
 </html>

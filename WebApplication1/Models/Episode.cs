@@ -40,12 +40,10 @@ namespace WebApplication1.Models
             return ds.GetEpPref(uId, sId);
         }
 
-        //public List<Episode> Get()
-        //{
-        //    DataServices ds = new DataServices();
-        //    return ds.GetEps();
-        //}
-
+        public void Remove(int uId, int eId) {
+            DataServices ds = new DataServices();
+            ds.RemoveEp(uId, eId);
+        }
     }
    
 }
