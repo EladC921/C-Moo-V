@@ -94,7 +94,8 @@ namespace WebApplication1.Models.DAL
                 Episode ep = obj as Episode;
                 sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')", ep.Id, ep.Id_ser, r.Replace(ep.EpName, ""), r.Replace(ep.SerName, ""), ep.SeasonNum, ep.Img, r.Replace(ep.Description, ""));
                 prefix = "INSERT INTO Episodes_2021 " + "([id], [id_ser] , [name], [sername], [season_num], [image], [description]) ";
-                commandPref = "INSERT INTO Preferences_2021 " + "([id_ep], [id_user], [id_ser], [active]) " + "Values(" + ep.Id.ToString() + "," + ep.Id_user.ToString() + "," + ep.Id_ser.ToString() + ", 1)";
+                commandPref = "IF EXISTS(SELECT id_ep, id_user FROM Preferences_2021 WHERE id_ep = " + ep.Id + " AND id_user = " + ep.Id_user + ") UPDATE Preferences_2021 SET active = 1 WHERE id_ep = "+ ep.Id + " AND id_user = " + ep.Id_user +
+                    " ElSE INSERT INTO Preferences_2021 " + "([id_ep], [id_user], [id_ser], [active]) " + "Values(" + ep.Id.ToString() + "," + ep.Id_user.ToString() + "," + ep.Id_ser.ToString() + ", 1)";
             }
             else if (obj is Serie)
             {
