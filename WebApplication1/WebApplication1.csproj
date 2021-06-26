@@ -182,8 +182,12 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="js\adminView.js" />
     <Content Include="js\config.js" />
+    <Content Include="js\insert.js" />
     <Content Include="js\scripts.js" />
+    <Content Include="js\seriesses.js" />
+    <Content Include="js\view.js" />
     <Content Include="Pages\adminView.html" />
     <Content Include="Pages\homePage.html" />
     <Content Include="Pages\insert.html" />
@@ -241,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
