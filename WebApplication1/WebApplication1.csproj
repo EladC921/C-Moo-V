@@ -179,11 +179,18 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="css\adminView.css" />
+    <Content Include="css\homePage.css" />
+    <Content Include="css\insert.css" />
+    <Content Include="css\serieses.css" />
+    <Content Include="css\styles.css" />
+    <Content Include="css\view.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="js\adminView.js" />
     <Content Include="js\config.js" />
+    <Content Include="js\homePage.js" />
     <Content Include="js\insert.js" />
     <Content Include="js\scripts.js" />
     <Content Include="js\seriesses.js" />
@@ -245,7 +252,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

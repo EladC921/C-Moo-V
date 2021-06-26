@@ -449,7 +449,7 @@ function AddPost() {
         disslikes: one,
     }
     refer.child(keyto).update(newData);
-
+    document.getElementById("pComment").value = '';
 }
 
 //Pushes the chats and initiating the data to firebase
@@ -480,6 +480,7 @@ function AddReply(id) {
     let msg = document.getElementById("pReply" + id).value;
     let name = user.Name;
     repl.push().set({ "reply": msg, "name": name, "id": id });
+    document.getElementById("pReply" + id).value = '';
 }
 //Updates the likes with +1 after user clicked and initiating the data to firebase
 function AddLike(likes, id) {
