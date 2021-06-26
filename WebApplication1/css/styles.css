@@ -11711,7 +11711,6 @@ padding-top: 2%;
 
 .makeitabstract {
     color: green;
-    background-color: lightgrey;
     font-size: 15px;
     position: fixed;
     bottom: 20px;
@@ -11719,6 +11718,16 @@ padding-top: 2%;
     padding:1%;
     padding-left:5px;
 }
+
+.fans {
+    position: fixed;
+    color: slateblue;
+    left: 20px;
+    bottom: 20px;
+    padding: 1%;
+    padding-right: 5px;
+}
+
 /* Show Series*/
 @import url("https://fonts.googleapis.com/css?family=Montserrat:300,400,700,800");
 

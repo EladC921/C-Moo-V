@@ -16,6 +16,14 @@ namespace WebApplication1.Controllers
             Serie ser = new Serie();
             return ser.Get(uId, type);
         }      
+               
+        // GET api/<controller>
+        [Route("api/Series/checkPref/{uId}/{sId}")]
+        public int Get(int uId, int sId)
+        {
+            Serie ser = new Serie();
+            return ser.CheckPref(uId, sId);
+        }      
 
         // POST api/<controller>
         public int Post([FromBody] Serie ser)

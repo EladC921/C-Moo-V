@@ -42,5 +42,10 @@ namespace WebApplication1.Models
             return ds.GetSerPref(uId, type);
         }
 
+        public int CheckPref(int uId, int sId)
+        {
+            DataServices ds = new DataServices();
+            return ds.CheckSerPref(uId, sId);
+        }
     }
 }

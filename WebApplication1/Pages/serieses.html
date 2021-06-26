@@ -126,6 +126,7 @@
             list-style: none;
             margin: 0;
             padding: 0;
+            width:100%;
         }
 
 
@@ -153,12 +154,16 @@
                 margin-right: 5px;
             }
 
-        .body-panel {
-            overflow-y: scroll;
-            height: 250px;
+        #chat-panel {
+            width: 500px;
+            text-align: center;
+            margin:auto;
         }
 
-
+        .body-panel {
+            overflow-y: scroll;
+            height: 400px;
+        }
 
         .bg-cmv-chat {
             background-color: #cc9966;
@@ -167,7 +172,7 @@
         }
 
             .bg-cmv-chat h3 {
-                font-family: sans-serif Lato;
+                font-family: Arial;
                 font-size: 15px;
             }
 
@@ -327,16 +332,9 @@
                 console.log(user);
                 //document.getElementById("welcome").innerHTML = "Hello " + user.Name + " " + user.Sername;
                 $("#welcome").html("Hello " + user.Name + " " + user.Sername);
-                window.addEventListener("beforeunload", function (event) { });
-                window.onbeforeunload = function (event) { };
-
-            }
-
-            else window.location.href = "homePage.html";
-            if (localStorage.ser != null) { //if user already logged in, details saved -> auto-login
                 Tv = JSON.parse(localStorage.ser);
-
             }
+            else window.location.href = "homePage.html";
 
             randSeasons(Tv.Id);
             init();
@@ -346,8 +344,7 @@
                 window.location.href = "homePage.html";
             })
 
-            //loadUsersOnline();
-
+            rendFans(Tv.Id);
 
             //key from tmdb
             key = "fe72ae4f33f6eb8a2b98a62fb320f4ec";
@@ -370,11 +367,6 @@
         function error(err) {
             console.log(err);
         }
-
-
-        // TV Success
-
-
 
         //Rand the seasons of the TV Show
         function randSeasons(id) {
@@ -404,8 +396,6 @@
             console.log("checkpoint: tv show")
             console.log(tv_show);
             number_of_seasons = tv_show.number_of_seasons;
-
-
 
             //POST series object
             let apiSeries = "../api/Series";
@@ -466,8 +456,6 @@
             $("#ph-spd").html(str);
         }
 
-
-
         //Insert button handler
         function insert(index) {
             i = index // make it global
@@ -518,7 +506,6 @@
             let gender = "";
             actors = [];
 
-
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ACTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
             for (var i = 0; i < credits.cast.length; i++) {
@@ -545,7 +532,7 @@
             }
             str += '</div></div></section>';
             $("#ph-actors").append(str);
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ACTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
             apiAc = "../api/Actors";
             ajaxCall("POST", apiAc, JSON.stringify(actors), postActorsSuccessCB, error);
@@ -554,7 +541,7 @@
         //Post actors Success
         function postActorsSuccessCB() {
             console.log("actors has been inserted to DB");
-
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ACTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             $("#ph-seasons").html('');
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             //rand to page
@@ -573,7 +560,21 @@
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         }
 
+        //rendering the fans of the series
+        function rendFans() {
+            let apiFans = "../api/Users/fans/" + Tv.Id;
+            ajaxCall("GET", apiFans, "", getFansSuccessCB, error);
+        }
 
+        //Get fans Success
+        function getFansSuccessCB(uL) {
+            str = "<ul><b>FANS<b>";
+            for (var i = 0; i < uL.length; i++) {
+                str += "<li>" + uL[i].Name + " " + uL[i].Sername + "</li>";
+            }
+            str += "</ul>";
+            $("#ph-fans").html(str);
+        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE WORKAROUND ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //Initating the firebase and listeners
@@ -585,13 +586,52 @@
             ref = firebase.database().ref(tvNameRegex);
             refer = firebase.database().ref('/' + tvNameRegex + ' /' + 'comment');
             repl = firebase.database().ref('/' + tvNameRegex + ' /' + 'reply');
+            lke = firebase.database().ref('/' + tvNameRegex + ' /' + 'like');
+            dlke = firebase.database().ref('/' + tvNameRegex + ' /' + 'dislike');
             // listen to incoming messages
             listenToNewMessages();
             // listen to new comments
             listenToNewComments();
+            // listen to new replies
             listenToNewReplies();
+            // listen to new likes
+            listenToNewLikes();
+            // listen to new disslikes
+            listenToNewDissLikes();
 
+        }
 
+        //Listen for new likes added
+        function listenToNewLikes() {
+            // child_changed will be evoked for every child that was changed
+            // on the first entry, it will bring all the childs
+            refer.on("child_changed", snapshot => {
+                cmnt = {
+                    name: snapshot.val().name,
+                    content: snapshot.val().comment,
+                    id: snapshot.val().id,
+                    likes: snapshot.val().likes,
+                    disslikes: snapshot.val().disslikes
+                }
+                printLike(cmnt);
+            })
+        }
+
+        //Listen for new disslikes added
+        function listenToNewDissLikes() {
+            // child_changed will be evoked for every child that was changed
+            // on the first entry, it will bring all the childs
+            refer.on("child_changed", snapshot => {
+                cmnt = {
+                    name: snapshot.val().name,
+                    content: snapshot.val().comment,
+                    id: snapshot.val().id,
+                    likes: snapshot.val().likes,
+                    disslikes: snapshot.val().disslikes
+                }
+                console.log(cmnt.disslikes);
+                printDissLike(cmnt);
+            })
         }
 
         //Listen for new chat messages
@@ -615,7 +655,9 @@
                 cmnt = {
                     name: snapshot.val().name,
                     content: snapshot.val().comment,
-                    id: snapshot.val().id
+                    id: snapshot.val().id,
+                    likes: snapshot.val().likes,
+                    disslikes: snapshot.val().disslikes
                 }
                 printComment(cmnt);
             })
@@ -623,15 +665,27 @@
 
         //Listening to new replies for posts
         function listenToNewReplies() {
+            // child_added will be evoked for every child that was added
+            // on the first entry, it will bring all the childs
             repl.on("child_added", snapshot => {
                 replay = {
                     name: snapshot.val().name,
                     reply: snapshot.val().reply,
                     id: snapshot.val().id
                 }
-                console.log(replay.reply);
+                console.log("=============");
+                console.log(replay.id);
                 printReply(replay);
             })
+        }
+
+        //Printing the updated disslike
+        function printDissLike(cmnt) {
+            $("#disslikenum").html(cmnt.disslikes);
+        }
+        //Printing the updated like
+        function printLike(cmnt) {
+            $("#likenum").html(cmnt.likes);
         }
 
         //Printing the chat messages
@@ -647,6 +701,7 @@
         }
 
         //Prints the replies for posts
+
         function printReply(replay) {
 
             let str = "";
@@ -655,57 +710,52 @@
                 '                    <p><a class="profile-link">' + replay.name + " :" + '</a>' + replay.reply + ' </p>\n' +
                 '                  </div>';
 
-
             $('#' + replay.id + ' #usercommentsinsert').append(str);
         }
 
         //Prints the posts
         function printComment(cmnt) {
-
-            var id = cmnt.id.substring(cmnt.id.length - 19);
-            console.log("-------------------")
-            id = id.replace(/[^a-zA-Z ]/g, "");
-            id1 = id;
-            console.log(id);
-            ff = 3;
+            console.log(cmnt.disslikes);
+            id1 = "'" + cmnt.id + "'";
             let str = "";
             str = ' </div>\n' +
-                '                            <div class="container">\n' +
-                '                                <div class="row">\n' +
-                '                                    <div class="col-md-8">\n' +
-                '                                        <div class="post-content">\n' +
+                '<div class="container">\n' +
+                '<div class="row">\n' +
+                '<div class="col-md-8">\n' +
+                '<div class="post-content">\n' +
                 '\n' +
-                '                                            <div class="post-container">\n' +
-                '                                                <img src="https://cdn.discordapp.com/attachments/727187267788996640/854969393481646090/sacred-cow.png" alt="user" class="profile-photo-md pull-left">\n' +
-                '                                               <div id="' + id + '" class="post-detail">\n' +
-                '                                                    <div class="user-info">\n' +
-                '                                                        <h5 class="profile-link">' + cmnt.name + '</h5>\n' +
+                '<div class="post-container">\n' +
+                '<img src="https://cdn.discordapp.com/attachments/727187267788996640/854969393481646090/sacred-cow.png" alt="user" class="profile-photo-md pull-left">\n' +
+                '<div id="' + cmnt.id + '" class="post-detail">\n' +
+                '<div class="user-info">\n' +
+                '<h5 class="profile-link">' + cmnt.name + '</h5>\n' +
                 '\n' +
-                '                                                    </div>\n' +
-                '                                                    <div class="reaction">\n' +
-                '                                                        <a class="btn text-green"><i class="fa fa-thumbs-up"></i> 13</a>\n' +
-                '                                                        <a class="btn text-red"><i class="fa fa-thumbs-down"></i> 0</a>\n' +
-                '                                                    </div>\n' +
-                '                                                    <div class="line-divider"></div>\n' +
-                '                                                    <div class="post-text">\n' +
-                '                                                        <p>' + cmnt.content + '<i class="em em-anguished"></i> <i class="em em-anguished"></i> <i class="em em-anguished"></i></p>\n' +
-                '                                                    </div>\n' +
-                '                                                    <div class="line-divider"></div>\n' +
-                '                                                    <div id="usercommentsinsert">\n' +
+                '</div>\n' +
+                '<div id="react"  class="reaction">\n' +
+
+                '<a id="liking" onclick="AddLike(' + cmnt.likes + ',' + id1 + ')" class="btn text-green"><i class="fa fa-thumbs-up"></i><div id="likenum" style="float:right ">' + cmnt.likes + '</div></a>\n' +
+                '<a id="dissliking" onclick="AddDissLike(' + cmnt.disslikes + ',' + id1 + ')" class="btn text-red"><i class="fa fa-thumbs-down"></i><div id="disslikenum" style="float:right ">' + cmnt.disslikes + '</div></a>\n' +
+                '</div>\n' +
+                '<div class="line-divider"></div>\n' +
+                '<div class="post-text">\n' +
+                '<p>' + cmnt.content + '<i class="em em-anguished"></i> <i class="em em-anguished"></i> <i class="em em-anguished"></i></p>\n' +
+                '</div>\n' +
+                '<div class="line-divider"></div>\n' +
+                '<div id="usercommentsinsert">\n' +
 
                 '\n' +
-                '                                                    </div>\n' +
-                '                                                    <div class="post-comment">\n' +
-                '                                                        <img src="https://cdn.discordapp.com/attachments/727187267788996640/854969393481646090/sacred-cow.png" alt="" class="profile-photo-sm">\n' +
-                '                                                        <input type="text" id="pReply' + id + '" class="form-control" placeholder="Post a comment">\n' +
-                '                                                        <button class="btn btn-primary btn-xl enabled" id="submitButton" onClick="AddReply(' + "'" + id + "'" + ')" type="submit">Send</button>\n' +
-                '                                                    </div>\n' +
-                '                                                </div>\n' +
-                '                                            </div>\n' +
-                '                                        </div>\n' +
-                '                                    </div>\n' +
-                '                                </div>\n' +
-                '                            </div>\n' +
+                '</div>\n' +
+                '<div class="post-comment">\n' +
+                '<img src="https://cdn.discordapp.com/attachments/727187267788996640/854969393481646090/sacred-cow.png" alt="" class="profile-photo-sm">\n' +
+                '<input type="text" id="pReply' + cmnt.id + '" class="form-control" placeholder="Post a comment">\n' +
+                '<button class="btn btn-primary btn-xl enabled" id="submitButton" onClick="AddReply(' + id1 + ')" type="submit">Send</button>\n' +
+                '</div>\n' +
+                '</div>\n' +
+                '</div>\n' +
+                '</div>\n' +
+                '</div>\n' +
+                '</div>\n' +
+                '</div>\n' +
                 '';
             $("#ph-sss").append(str);
 
@@ -715,40 +765,61 @@
         function AddPost() {
             var myRef = refer.push();
             keyto = myRef.getKey();
-            keyto = keyto.replace(/[^a-zA-Z ]/g, "");
-            console.log(keyto);
-
+            var one = 0;
             var newData = {
                 id: keyto,
                 comment: document.getElementById("pComment").value,
                 name: user.Name,
+                likes: one,
+                disslikes: one,
             }
-            refer.push(newData);
+            refer.child(keyto).update(newData);
 
         }
 
         //Pushes the chats and initiating the data to firebase
         function AddMSG() {
+            let apiCheck = "../api/Series/checkPref/" + user.Id + "/" + Tv.Id;
+            ajaxCall("GET", apiCheck, "", getUprefSerSuccessCB, error);
+        }
 
-            let msg = document.getElementById("message").value;
-            document.getElementById("message").value = "";
-            let name = user.Name;
-            console.log(name);
-            console.log(msg);
-            ref.push().set({ "msg": msg, "name": name });
+        //Get series of user Success
+        function getUprefSerSuccessCB(tmp) {
+            if (tmp == 1) {
+                let msg = document.getElementById("message").value;
+                document.getElementById("message").value = "";
+                let name = user.Name;
+                console.log(name);
+                console.log(msg);
+                ref.push().set({ "msg": msg, "name": name });
+            }
+            else {
+                alert("You must add at least 1 episode to your list to be a fan!");
+                $("#message").val("");
+            }
         }
 
         //Pushes the replies and initiating the data to firebase
         function AddReply(id) {
             console.log(id);
             let msg = document.getElementById("pReply" + id).value;
-            console.log(msg);
-
-
             let name = user.Name;
             repl.push().set({ "reply": msg, "name": name, "id": id });
         }
+        //Updates the likes with +1 after user clicked and initiating the data to firebase
+        function AddLike(likes, id) {
+            console.log(id);
 
+            refer.child(id).update({ "likes": likes + 1 });
+
+        }
+        //Updates the disslikes with +1 after user clicked and initiating the data to firebase
+        function AddDissLike(disslikes, id) {
+            console.log(id);
+
+            refer.child(id).update({ "disslikes": disslikes + 1 });
+
+        }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE WORKAROUND END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     </script>
@@ -787,7 +858,8 @@
 
             <div id="ph-div">
                 <div class="row form-group">
-                    <div class="col-xs-12 col-md-offset-2 col-md-8 col-lg-8 col-lg-offset-2">
+                    <div id="chat-panel" class="col-xs-12 col-md-offset-2 col-md-8 col-lg-8 col-lg-offset-2">
+                        <div id="ph-fans" class="fans"></div>
                         <div class="panel panel-primary">
                             <div class="bg-cmv-chat">
                                 <h3>Fan Chat</h3>
@@ -797,7 +869,7 @@
 
                                     <li class="right clearfix">
                                         <span class="chat-img pull-right">
-                                            <img src="http://placehold.it/50/FA6F57/fff&text=ADMIN" alt="User Avatar" class="img-circle" />
+                                            <img src="https://via.placeholder.com/50/FFFF00/000000?text=ADMIN" alt="User Avatar" class="img-circle" />
                                         </span>
                                         <div class="chat-body clearfix">
                                             <div class="header">
@@ -808,8 +880,6 @@
                                             </p>
                                         </div>
                                     </li>
-
-
                                 </ul>
                             </div>
                             <div class="panel-footer clearfix">
@@ -823,8 +893,6 @@
                 </div>
             </div>
             <!-- Heading-->
-
-
         </div>
     </header>
     <!-- RENDERING -->
@@ -859,103 +927,6 @@
     </div>
     <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
     <div id="ph-status" class="makeitabstract"></div>
-
-    <!-- About Section-->
-    <section class="page-section bg-primary text-white mb-0" id="about">
-        <div class="container">
-            <!-- About Section Heading-->
-            <h2 class="page-section-heading text-center text-uppercase text-white">About</h2>
-            <!-- Icon Divider-->
-            <div class="divider-custom divider-light">
-                <div class="divider-custom-line"></div>
-                <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                <div class="divider-custom-line"></div>
-            </div>
-            <!-- About Section Content-->
-            <div class="row">
-                <div class="col-lg-4 ms-auto"><p class="lead">Freelancer is a free bootstrap theme created by Start Bootstrap. The download includes the complete source files including HTML, CSS, and JavaScript as well as optional SASS stylesheets for easy customization.</p></div>
-                <div class="col-lg-4 me-auto"><p class="lead">You can create your own custom avatar for the masthead, change the icon in the dividers, and add your email address to the contact form to make it fully functional!</p></div>
-            </div>
-            <!-- About Section Button-->
-            <div class="text-center mt-4">
-                <a class="btn btn-xl btn-outline-light" href="https://startbootstrap.com/theme/freelancer/">
-                    <i class="fas fa-download me-2"></i>
-                    Free Download!
-                </a>
-            </div>
-        </div>
-    </section>
-    <!-- Contact Section-->
-    <section class="page-section" id="contact">
-        <div class="container">
-            <!-- Contact Section Heading-->
-            <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Contact Me</h2>
-            <!-- Icon Divider-->
-            <div class="divider-custom">
-                <div class="divider-custom-line"></div>
-                <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                <div class="divider-custom-line"></div>
-            </div>
-            <!-- Contact Section Form-->
-            <div class="row justify-content-center">
-                <div class="col-lg-8 col-xl-7">
-                    <!-- * * * * * * * * * * * * * * *-->
-                    <!-- * * SB Forms Contact Form * *-->
-                    <!-- * * * * * * * * * * * * * * *-->
-                    <!-- This form is pre-integrated with SB Forms.-->
-                    <!-- To make this form functional, sign up at-->
-                    <!-- https://startbootstrap.com/solution/contact-forms-->
-                    <!-- to get an API token!-->
-                    <form id="contactForm" data-sb-form-api-token="API_TOKEN">
-                        <!-- Name input-->
-                        <div class="form-floating mb-3">
-                            <input class="form-control" id="name" type="text" placeholder="Enter your name..." data-sb-validations="required" />
-                            <label for="name">Full name</label>
-                            <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
-                        </div>
-                        <!-- Email address input-->
-                        <div class="form-floating mb-3">
-                            <input class="form-control" id="email" type="email" placeholder="name@example.com" data-sb-validations="required,email" />
-                            <label for="email">Email address</label>
-                            <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
-                            <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
-                        </div>
-                        <!-- Phone number input-->
-                        <div class="form-floating mb-3">
-                            <input class="form-control" id="phone" type="tel" placeholder="(123) 456-7890" data-sb-validations="required" />
-                            <label for="phone">Phone number</label>
-                            <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
-                        </div>
-                        <!-- Message input-->
-                        <div class="form-floating mb-3">
-                            <textarea class="form-control" id="message" type="text" placeholder="Enter your message here..." style="height: 10rem" data-sb-validations="required"></textarea>
-                            <label for="message">Message</label>
-                            <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
-                        </div>
-                        <!-- Submit success message-->
-                        <!---->
-                        <!-- This is what your users will see when the form-->
-                        <!-- has successfully submitted-->
-                        <div class="d-none" id="submitSuccessMessage">
-                            <div class="text-center mb-3">
-                                <div class="fw-bolder">Form submission successful!</div>
-                                To activate this form, sign up at
-                                <br />
-                                <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
-                            </div>
-                        </div>
-                        <!-- Submit error message-->
-                        <!---->
-                        <!-- This is what your users will see when there is-->
-                        <!-- an error submitting the form-->
-                        <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
-                        <!-- Submit Button-->
-                        <button class="btn btn-primary btn-xl disabled" id="submitButton" type="submit">Send</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
     <!-- Footer-->
     <footer class="footer text-center">
         <div class="container">
@@ -964,37 +935,31 @@
                 <div class="col-lg-4 mb-5 mb-lg-0">
                     <h4 class="text-uppercase mb-4">Location</h4>
                     <p class="lead mb-0">
-                        2215 John Daniel Drive
+                        Ruppin Academic Center
                         <br />
-                        Clark, MO 65243
+                        IL
                     </p>
                 </div>
                 <!-- Footer Social Icons-->
                 <div class="col-lg-4 mb-5 mb-lg-0">
                     <h4 class="text-uppercase mb-4">Around the Web</h4>
-                    <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-twitter"></i></a>
-                    <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-linkedin-in"></i></a>
-                    <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-dribbble"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/Ruppin.Academic.Center/" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.instagram.com/ruppin/" target="_blank"><i class="fab fa-fw fa-instagram"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/ruppin/" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
                 </div>
                 <!-- Footer About Text-->
                 <div class="col-lg-4">
-                    <h4 class="text-uppercase mb-4">About Freelancer</h4>
+                    <h4 class="text-uppercase mb-4">About C-Moo-V</h4>
                     <p class="lead mb-0">
-                        Freelance is a free to use, MIT licensed Bootstrap theme created by
-                        <a href="http://startbootstrap.com">Start Bootstrap</a>
-                        .
+                        C-Moo-V is a free to use, Here you can create a list of your favorite episodes!
                     </p>
                 </div>
             </div>
         </div>
     </footer>
     <!-- Copyright Section-->
-    <div class="copyright py-4 text-center text-white">
+    <div id="copyright" class="copyright py-5 text-center text-white">
         <div class="container"><small>Copyright &copy; C-Moo-V 2021</small></div>
     </div>
-
-
-
 </body>
 </html>

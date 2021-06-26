@@ -188,7 +188,6 @@ namespace WebApplication1.Models.DAL
 
         public List<Serie> GetSerPref(int uId, string type)
         {
-
             SqlConnection con = null;
             List<Serie> serList = new List<Serie>();
             try
@@ -236,7 +235,6 @@ namespace WebApplication1.Models.DAL
                     ser.Poster_path = (string)(dr["poster_path"]);
                     serList.Add(ser);
                 }
-
                 return serList;
             }
             catch (Exception ex)
@@ -250,13 +248,11 @@ namespace WebApplication1.Models.DAL
                 {
                     con.Close();
                 }
-
             }
         }
 
         public List<Episode> GetEpPref(int uId, int sId)
         {
-
             SqlConnection con = null;
             List<Episode> episodeList = new List<Episode>();
 
@@ -304,7 +300,6 @@ namespace WebApplication1.Models.DAL
 
         }
 
-
         //GET users List for admin
         public List<User> GetUList()
         {
@@ -337,7 +332,6 @@ namespace WebApplication1.Models.DAL
                     uList.Add(u);
                 }
                 return uList;
-
             }
             catch (Exception ex)
             {
@@ -398,11 +392,8 @@ namespace WebApplication1.Models.DAL
                 {
                     con.Close();
                 }
-
             }
-
         }
-
 
         //Insert Actors list to DB
         public int InsertActors(List<Actor> actors)
@@ -419,7 +410,6 @@ namespace WebApplication1.Models.DAL
                 // write to log
                 throw (ex);
             }
-
 
             while (true)
             {
@@ -504,6 +494,80 @@ namespace WebApplication1.Models.DAL
                 if (con != null)
                 {
                     // close the db connection
+                    con.Close();
+                }
+            }
+        }
+
+
+        public int CheckSerPref(int uId, int sId)
+        {
+            SqlConnection con = null;
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT * FROM Preferences_2021 WHERE id_ser=" + sId + " AND id_user=" + uId + " AND active=1";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    if ((int)(dr["id_ser"]) == sId) return 1;
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        //GET users List for admin
+        public List<User> GetUList(int sId)
+        {
+            SqlConnection con = null;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT U.name, U.sername FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active=1) P inner join Users_2021 U on u.id = P.id_user WHERE P.id_ser=" + sId;
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+                List<User> uList = new List<User>();
+
+                //Break in the end - suppose to return 1 or 0 rows
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    User u = new User();
+                    u.Name = (string)dr["name"];
+                    u.Sername = (string)dr["sername"];
+                    uList.Add(u);
+                }
+                return uList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
                     con.Close();
                 }
             }

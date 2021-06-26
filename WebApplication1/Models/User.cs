@@ -50,5 +50,11 @@ namespace WebApplication1.Models
             DataServices ds = new DataServices();
             return ds.GetUList();
         }
+
+        public List<User> GetUList(int sId)
+        {
+            DataServices ds = new DataServices();
+            return ds.GetUList(sId);
+        }
     }
 }

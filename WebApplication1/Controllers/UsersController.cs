@@ -17,6 +17,13 @@ namespace WebApplication1.Controllers
             return u.GetUList();
         }
 
+        [Route("api/Users/fans/{sId}")]
+        public IEnumerable<User> Get(int sId)
+        {
+            User u = new User();
+            return u.GetUList(sId);
+        }
+
         public HttpResponseMessage Get(string mail, string password)
         {
             User u = new User();
