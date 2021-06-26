@@ -11728,6 +11728,10 @@ padding-top: 2%;
     padding-right: 5px;
 }
 
+.info-in {
+    font-size: 2rem;
+}
+
 /* Show Series*/
 @import url("https://fonts.googleapis.com/css?family=Montserrat:300,400,700,800");
 

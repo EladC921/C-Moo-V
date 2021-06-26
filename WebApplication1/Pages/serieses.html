@@ -333,6 +333,8 @@
                 //document.getElementById("welcome").innerHTML = "Hello " + user.Name + " " + user.Sername;
                 $("#welcome").html("Hello " + user.Name + " " + user.Sername);
                 Tv = JSON.parse(localStorage.ser);
+                if (user.Mail == 'admin@control.tmdb')
+                    $("#nav-items-title").append('<li class="nav-item mx-0 mx-lg-1" id="admin"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer" href="adminView.html">Admin Page</a></li>');
             }
             else window.location.href = "homePage.html";
 
@@ -842,7 +844,7 @@
             </button>
             <!-- MENU ITEMS -->
             <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto">
+                <ul id="nav-items-title" class="navbar-nav ms-auto">
                     <li class="nav-item mx-0 mx-lg-1" id="view"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">View My Episodes</a></li>
                     <li class="nav-item mx-0 mx-lg-1" id="search"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">Back to Search</a></li>
                     <li class="nav-item mx-0 mx-lg-1" id="logout"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">Logout</a></li>
