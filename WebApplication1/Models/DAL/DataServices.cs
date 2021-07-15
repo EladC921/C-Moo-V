@@ -209,12 +209,13 @@ namespace WebApplication1.Models.DAL
                                                                                                                          + "SELECT P0.id_user "
                                                                                                                          + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P0 "
                                                                                                                          + "WHERE P0.id_user = @id AND P0.id_ser = P1.id_ser)"
-                                + ") AND P.id_user in ("
-                                                        + "SELECT P2.id_user FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P2 "
-                                                        + "WHERE P2.id_user!=@id AND EXISTS("
+                                + ") AND EXISTS ("
+                                                        + "SELECT TOP(5) P2.id_user, COUNT(P2.id_ser) 'N' FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P2 "
+                                                        + "WHERE  P2.id_user=P.id_user AND P2.id_user!=@id AND EXISTS("
                                                                                             + "SELECT P3.id_user "
                                                                                             + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P3 "
-                                                                                            + "WHERE P3.id_user = @id AND P3.id_ser = P2.id_ser)) "
+                                                                                            + "WHERE P3.id_user = @id AND P3.id_ser = P2.id_ser)"
+                                                        + "GROUP BY P2.id_user ORDER BY 'N' DESC)"
                                 + "GROUP BY P.id_ser, S.first_air_date, S.name , S.origin_country, S.original_language, CAST(S.overview AS NVARCHAR(4000)), S.popularity, CAST(S.poster_path AS nvarchar(500)) "
                                 + "ORDER BY 'num of users' DESC";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);

@@ -14,14 +14,13 @@
         }
 
         $(document).ready(function () {
-            if (localStorage.user != null) { //if a user exists in localStorage upload insert screen
+            if (localStorage.user != null) { //if a user exists in localStorage -> go to 'insert.html'
                 user = JSON.parse(localStorage.user);
                 if (user.Mail == "admin@control.tmdb") {
-                    window.location.href = "adminView.html";
+                    window.location.href = "adminView.html"; //if a user is an Admin -> go to 'adminView.html'
                 }
                 else
                     window.location.href = "insert.html";
-
             }
 
             $("#pForm").submit(mySubmit);
@@ -60,16 +59,12 @@
                 FavGenre: genre,
                 Address: address
             }
-
             console.log(user);
-
-
 
             //Using POST through ajax call to add the object to the episode list
             api = "../api/Users"; //global var
 
             ajaxCall("POST", api, JSON.stringify(user), postUSuccessCB, postUErrorCB);
-
             return false;
         }
 
@@ -79,7 +74,7 @@
             window.location.href = "homePage.html";
         }
 
-        //Post user error
+        //Post user error -> if user exists alert
         function postUErrorCB(err) {
             console.log(err);
             alert(err.responseJSON);
@@ -97,12 +92,12 @@
         //Login success
         function getULoginSuccessCB(user) {
             console.log(user);
-            delete user.Pass;
+            delete user.Pass; //delete password so it wont appear in local storage
             localStorage.user = JSON.stringify(user);
-            if (user.Mail == "admin@control.tmdb") {
+            if (user.Mail == "admin@control.tmdb") { //if admin go to 'adminView.html'
                 window.location.href = "adminView.html";
             }
-            else
+            else //go to 'insert.html'
                 window.location.href = "insert.html";
             //add user to localStorage
         }

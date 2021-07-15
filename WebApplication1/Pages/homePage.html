@@ -34,7 +34,6 @@
             <div class="card">
                 <div class="card-header">
                     <h3>Sign In</h3>
-
                 </div>
                 <div class="card-body">
                     <form id="lForm">
@@ -42,21 +41,16 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-user"></i></span>
                             </div>
-
                             <input pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" type="email" class="form-control" id="mailLogTB" placeholder="Enter email address" required />
-
                         </div>
                         <div class="input-group form-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-key"></i></span>
                             </div>
                             <input type="password" class="form-control" id="passLogTB" placeholder="Enter password" required />
-
                         </div>
-
                         <div class="form-group">
                             <input type="submit" value="Login" class="btn float-right login_btn">
-
                         </div>
                     </form>
                 </div>
@@ -64,21 +58,18 @@
                     <div class="d-flex justify-content-center links">
                         <h5 style='padding-right:5px;'>Don't have an account?</h5>    <button onclick="document.getElementById('register').style.display='block'" style="width:auto;background-color:aliceblue" class="btn float-right login_btn">Register</button>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
     <div id="container">
-
-
         <!-- The Register Modal -->
         <div class="modal" id="register">
             <span onclick="document.getElementById('register').style.display='none'"
                   class="close" title="Close Modal">&times;</span>
             <form class="modal-content animate" action="" id="pForm">
                 <h2>Register</h2>
-                <div class="form-group">
+                <div class="form-group form-style">
                     <table>
                         <tr>
                             <!-- First Name -->
@@ -157,8 +148,6 @@
                 <input type="submit" value="Submit" class="btn float-right login_btn" />
             </form>
         </div>
-
-
     </div>
 </body>
 </html>

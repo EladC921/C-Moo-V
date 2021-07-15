@@ -5,30 +5,26 @@ $(document).ready(function () {
         console.log(user);
         //document.getElementById("welcome").innerHTML = "Hello " + user.Name + " " + user.Sername;
         $("#welcome").html("Hello " + user.Name + " " + user.Sername);
-        Tv = JSON.parse(localStorage.ser);
-        if (user.Mail == 'admin@control.tmdb')
+        ser = JSON.parse(localStorage.ser);
+        if (user.Mail == 'admin@control.tmdb') //if admin -> add go to 'adminView.html'
             $("#nav-items-title").append('<li class="nav-item mx-0 mx-lg-1" id="admin"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer" href="adminView.html">Admin Page</a></li>');
     }
     else window.location.href = "homePage.html";
 
-    randSeasons(Tv.Id);
-    init();
+    randSeasons(ser.Id); 
+
     //logout -> clear localStorage and return to homepage
     $("#logout").click(function () {
         localStorage.clear();
         window.location.href = "homePage.html";
     })
-
-    rendFans(Tv.Id);
-
+    
     //key from tmdb
     key = "fe72ae4f33f6eb8a2b98a62fb320f4ec";
     api_key = "api_key=" + key;
 
     url = "https://api.themoviedb.org/";
     imagePath = "https://image.tmdb.org/t/p/w500/";
-
-    //https://api.themoviedb.org/3/tv/1416/season/0/episode/64467?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US
 
     $("#view").click(function () {
         window.location.href = "view.html";
@@ -45,8 +41,6 @@ function error(err) {
 
 //Rand the seasons of the TV Show
 function randSeasons(id) {
-    //Creation of series object
-
     let apiTv = "https://api.themoviedb.org/3/tv/" + id + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
     ajaxCall("GET", apiTv, "", getSpecificTvSuccessCB, error);
 
@@ -55,6 +49,21 @@ function randSeasons(id) {
 //get specific tv show SUCCESS
 function getSpecificTvSuccessCB(tv) {
     tv_show = tv; //make it global
+
+    //Creation of series object
+    Tv = {
+        Id: tv_show.id,
+        First_air_date: tv_show.air_date,
+        Name: tv_show.name,
+        Origin_country: tv_show.origin_country[0],
+        Original_language: tv_show.original_language,
+        Overview: tv_show.overview,
+        Popularity: tv_show.overview,
+        Poster_path: tv_show.poster_path
+    }
+
+    rendFans(Tv.Id); //rand fans that like this current Tv Show
+    init(); //create forum & chat
 
     $("#ph-present").html('');
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TV CARD SHOW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,101 +86,16 @@ function getSpecificTvSuccessCB(tv) {
     ajaxCall("POST", apiSeries, JSON.stringify(Tv), postSeriesSuccessCB, error);
 }
 
-//Rand the Episodes of the season
-function randEps(i) {
-    apiSeason = "https://api.themoviedb.org/3/tv/" + tv_show.id + "/season/" + i + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
-    ajaxCall("GET", apiSeason, "", getEpsSuccessCB, error);
-}
-
-//Get the season success - generate episodes
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function getEpsSuccessCB(_season) {
-    console.log("checkpoint: season");
-    console.log(_season);
-    season = _season
-    number_of_eps = season.episodes.length;
-    let str = '<div id="#series-card"><div class="movie_card" id="bright"><div class="info_section"><div class="movie_header">' +
-        '<img class="locandina" src="' + imagePath + _season.poster_path + '" />' +
-        '<h1>' + _season.name + '</h1><h4>' + _season.air_date + '</h4>' + '</div >';
-    str += ' <div class="movie_desc"><p class="text">' + _season.overview + '</p></div>'
-    str += '</div><div class="blur_back" style="background:url("' + imagePath + _season.poster_path + '")"></div></div>';
-    $("#ph-present1").html(str);
-
-    $("#ph-eps").html('');
-
-    let str1 = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
-    for (var i = 0; i < number_of_eps; i++) {
-        id = season.episodes[i].id;
-        str1 += "<div class='card card-block mx-2' style='width: 19rem; background-color: rgba(255, 255, 255, 0.8);'>";
-        str1 += "<div class='movie-image' id=" + id + " style='overflow: hidden;'>";
-
-        if (season.episodes[i].still_path == null) str1 += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item' alt='' /> ";//if there's no photo then put a generic one
-        else str1 += "<img src='" + imagePath + season.episodes[i].still_path + "' onclick='rendChat(" + i + ")'" + " class='card-img-top img-hover'  alt=''/> ";
-
-
-        str1 += "<h4 class='card-title text-center'>" + season.episodes[i].episode_number + ". " + season.episodes[i].name + "</h4>"; //episode name
-        str1 += "<div class='card-body'>";
-        str1 += "<button class='bg-but text-white btn btn-xl btn-outline-secondary' value=" + i + " onclick='insert(this.value)'>Add to My List!</button>"; //insert episode button
-        str1 += "</div></div></div>";
-    }
-    str1 += '</div></div></section>';
-    $("#ph-eps").html(str1);
-}
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-//Specific episode card with chat option
-function rendChat(index) {
-    let str = '<div id="#series-card"><div class="movie_card" id="bright"><div class="info_section"><div class="movie_header">' +
-        '<img class="locandina" src="' + imagePath + season.episodes[index].still_path + '" />' +
-        '<h1>' + season.episodes[index].name + '</h1>' + '</span><p class="type">' + season.episodes[index].overview + '</p></div >';
-    str += "<button class='bg-but text-white btn btn-xl btn-outline-secondary' value=" + index + " onclick='insert(this.value)'>Chat!</button>";
-    str += ' <div class="movie_desc"><p class="text text-left">' + '</p></div>'
-    str += '</div><div class="blur_back" style="background:url("' + imagePath + season.episodes[index].still_path + '")"></div></div>';
-
-    $("#ph-spd").html(str);
-}
-
-//Insert button handler
-function insert(index) {
-    i = index // make it global
-
-    //Creation of episode object
-    ep = {
-        Id: season.episodes[i].id,
-        Id_user: user.Id, //For preference table
-        EpName: season.episodes[i].name,
-        Id_ser: tv_show.id,
-        SerName: tv_show.name,
-        SeasonNum: season.season_number,
-        Img: imagePath + season.episodes[i].still_path,
-        Description: season.episodes[i].overview + "\nAir Date: " + season.episodes[i].air_date
-    }
-
-    console.log("checkpoint: Episode Object to Insert");
-    console.log(ep);
-
-    let apiEps = "../api/Episodes";
-    ajaxCall("POST", apiEps, JSON.stringify(ep), postEpsSuccessCB, error);
-}
-
 //Post series Success
 function postSeriesSuccessCB() {
     console.log("Breakpoint: SERIES POST SUCCESS")
     //using POST through ajax call to add the object to the episode list
 
-    //Put the actors
+    //Print the actors
     apiCredits = "https://api.themoviedb.org/3/tv/" + tv_show.id + "/credits?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
     ajaxCall("GET", apiCredits, "", getCreditsSuccessCB, error);
 
     console.log("checkpoint");
-}
-
-
-//Post Episode Success
-function postEpsSuccessCB(msg) {
-    if (msg == -1)
-        console.log("episode already exists in sql table therefore wasn't added once again")
-    alert("Episode inserted");
 }
 
 //GET Credits and cast Success
@@ -208,7 +132,6 @@ function getCreditsSuccessCB(credits) {
     str += '</div></div></section>';
     $("#ph-actors").append(str);
 
-
     apiAc = "../api/Actors";
     ajaxCall("POST", apiAc, JSON.stringify(actors), postActorsSuccessCB, error);
 }
@@ -216,7 +139,7 @@ function getCreditsSuccessCB(credits) {
 //Post actors Success
 function postActorsSuccessCB() {
     console.log("actors has been inserted to DB");
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ACTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /ACTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     $("#ph-seasons").html('');
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //rand to page
@@ -232,7 +155,90 @@ function postActorsSuccessCB() {
     }
     str += '</div></div></section>';
     $("#ph-seasons").html(str);
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /SEASONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+}
+
+//Rand the Episodes of the season
+function randEps(i) {
+    apiSeason = "https://api.themoviedb.org/3/tv/" + tv_show.id + "/season/" + i + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
+    ajaxCall("GET", apiSeason, "", getEpsSuccessCB, error);
+}
+
+//Get the season success - generate episodes
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function getEpsSuccessCB(_season) {
+    console.log("checkpoint: season");
+    console.log(_season);
+    season = _season
+    number_of_eps = season.episodes.length;
+    let str = '<div id="#series-card"><div class="movie_card" id="bright"><div class="info_section"><div class="movie_header">' +
+        '<img class="locandina" src="' + imagePath + _season.poster_path + '" />' +
+        '<h1>' + _season.name + '</h1><h4>' + _season.air_date + '</h4>' + '</div >';
+    str += ' <div class="movie_desc"><p class="text">' + _season.overview + '</p></div>'
+    str += '</div><div class="blur_back" style="background:url("' + imagePath + _season.poster_path + '")"></div></div>';
+    $("#ph-present1").html(str);
+
+    $("#ph-eps").html('');
+
+    let str1 = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
+    for (var i = 0; i < number_of_eps; i++) {
+        id = season.episodes[i].id;
+        str1 += "<div class='card card-block mx-2' style='width: 19rem; background-color: rgba(255, 255, 255, 0.8);'>";
+        str1 += "<div class='movie-image' id=" + id + " style='overflow: hidden;'>";
+
+        if (season.episodes[i].still_path == null) str1 += "<img src='https://photos-alleuro.s3.us-east-2.amazonaws.com/No-Photo.jpg' class='card-img-top item' alt='' /> ";//if there's no photo then put a generic one
+        else str1 += "<img src='" + imagePath + season.episodes[i].still_path + "' onclick='rendChat(" + i + ")'" + " class='card-img-top img-hover'  alt=''/> ";
+
+        str1 += "<h4 class='card-title text-center'>" + season.episodes[i].episode_number + ". " + season.episodes[i].name + "</h4>"; //episode name
+        str1 += "<div class='card-body'>";
+        str1 += "<button class='bg-but text-white btn btn-xl btn-outline-secondary' value=" + i + " onclick='insert(this.value)'>Add to My List!</button>"; //insert episode button
+        str1 += "</div></div></div>";
+    }
+    str1 += '</div></div></section>';
+    $("#ph-eps").html(str1);
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /EPISODES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//Specific episode card with chat option
+function rendChat(index) {
+    let str = '<div id="#series-card"><div class="movie_card" id="bright"><div class="info_section"><div class="movie_header">' +
+        '<img class="locandina" src="' + imagePath + season.episodes[index].still_path + '" />' +
+        '<h1>' + season.episodes[index].name + '</h1>' + '</span><p class="type">' + season.episodes[index].overview + '</p></div >';
+    str += "<button class='bg-but text-white btn btn-xl btn-outline-secondary' value=" + index + " onclick='insert(this.value)'>Add to My List!</button>";
+    str += ' <div class="movie_desc"><p class="text text-left">' + '</p></div>'
+    str += '</div><div class="blur_back" style="background:url("' + imagePath + season.episodes[index].still_path + '")"></div></div>';
+
+    $("#ph-spd").html(str);
+}
+
+//Insert button handler
+function insert(index) {
+    i = index // make it global
+
+    //Creation of episode object
+    ep = {
+        Id: season.episodes[i].id,
+        Id_user: user.Id, //For preference table
+        EpName: season.episodes[i].name,
+        Id_ser: tv_show.id,
+        SerName: tv_show.name,
+        SeasonNum: season.season_number,
+        Img: imagePath + season.episodes[i].still_path,
+        Description: season.episodes[i].overview + "\nAir Date: " + season.episodes[i].air_date
+    }
+
+    console.log("checkpoint: Episode Object to Insert");
+    console.log(ep);
+
+    let apiEps = "../api/Episodes";
+    ajaxCall("POST", apiEps, JSON.stringify(ep), postEpsSuccessCB, error);
+}
+
+//Post Episode Success
+function postEpsSuccessCB(msg) {
+    if (msg == -1)
+        console.log("episode already exists in sql table therefore wasn't added once again");
+    alert("Episode inserted");
 }
 
 //rendering the fans of the series
@@ -377,15 +383,14 @@ function printMessage(msg) {
 
 //Prints the replies for posts
 
-function printReply(replay) {
-
+function printReply(reply) {
     let str = "";
     str += '  <div class="post-comment form-control">\n' +
         '                    <img src="https://cdn.discordapp.com/attachments/727187267788996640/854969393481646090/sacred-cow.png" alt="" class="profile-photo-sm">\n' +
-        '                    <p><a class="profile-link">' + replay.name + " :" + '</a>' + replay.reply + ' </p>\n' +
+        '                    <p><a class="profile-link">' + reply.name + " :" + '</a>' + reply.reply + ' </p>\n' +
         '                  </div>';
 
-    $('#' + replay.id + ' #usercommentsinsert').append(str);
+    $('#' + reply.id + ' #usercommentsinsert').append(str);
 }
 
 //Prints the posts
@@ -454,11 +459,11 @@ function AddPost() {
 
 //Pushes the chats and initiating the data to firebase
 function AddMSG() {
-    let apiCheck = "../api/Series/checkPref/" + user.Id + "/" + Tv.Id;
+    let apiCheck = "../api/Series/checkPref/" + user.Id + "/" + Tv.Id; //check if current user is a fan -> if not can't write in fan chat
     ajaxCall("GET", apiCheck, "", getUprefSerSuccessCB, error);
 }
 
-//Get series of user Success
+//Get if user like series Success
 function getUprefSerSuccessCB(tmp) {
     if (tmp == 1) {
         let msg = document.getElementById("message").value;
@@ -485,16 +490,12 @@ function AddReply(id) {
 //Updates the likes with +1 after user clicked and initiating the data to firebase
 function AddLike(likes, id) {
     console.log(id);
-
     refer.child(id).update({ "likes": likes + 1 });
-
 }
 //Updates the disslikes with +1 after user clicked and initiating the data to firebase
 function AddDissLike(disslikes, id) {
     console.log(id);
-
     refer.child(id).update({ "disslikes": disslikes + 1 });
-
 }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE WORKAROUND END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

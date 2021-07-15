@@ -6,7 +6,7 @@ $(document).ready(function () {
         console.log(user);
         $("#welcome").html("Hello " + user.Name + " " + user.Sername);
 
-        if (user.Mail == 'admin@control.tmdb')
+        if (user.Mail == 'admin@control.tmdb') //if admin -> add go to admin page on navigation bar
             $("#nav-items-title").append('<li class="nav-item mx-0 mx-lg-1" id="admin"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer" href="adminView.html">Admin Page</a></li>');
     }
     else window.location.href = "homePage.html";
@@ -23,7 +23,7 @@ $(document).ready(function () {
     renAirToday();
     renDis();
 
-    $("#getTV").click(getTV);
+    $("#getTV").click(getTV); //search button
 
     //key from tmdb
     key = "fe72ae4f33f6eb8a2b98a62fb320f4ec";
@@ -32,9 +32,7 @@ $(document).ready(function () {
     url = "https://api.themoviedb.org/";
     imagePath = "https://image.tmdb.org/t/p/w500/";
 
-    //https://api.themoviedb.org/3/tv/1416/season/0/episode/64467?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US
-
-    $("#view").click(function () {
+    $("#view").click(function () { //go to 'view.html'
         window.location.href = "view.html";
     })
 });
@@ -49,7 +47,7 @@ function error(err) {
 function getPrint(obj) {
     console.log("To Print:")
     console.log(obj);
-    let str = "<section class='page-section mb-0'><div class='container'> <div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
+    let str = "<section class='page-section mb-0'><div class='container'><div class='row card_row rounded d-flex flex-row flex-nowrap overflow-auto shadow'>";
     for (var i = 0; i < obj.length; i++) {
         str += "<div class='card card-block mx-2' style='width:18rem; background-color:rgba(255, 255, 255, 0.8);'>";
         str += "<div class='movie-image' id=" + obj[i].id + " style='overflow: hidden;'>";
@@ -64,7 +62,6 @@ function getPrint(obj) {
 
 //ajax call to render on air today
 function renAirToday() {
-
     let api = "https://api.themoviedb.org/3/tv/airing_today?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US&page=1";
     ajaxCall("GET", api, "", getAirCB, error);
 }
@@ -111,8 +108,8 @@ function getAirCB(obj) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~ /ON AIR TODAY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 
+//render the "top rated" tv shows
 function renDis() {
-
     let api = "https://api.themoviedb.org/3/tv/top_rated?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US&page=1";
     ajaxCall("GET", api, "", getDisCB, error);
 }
@@ -130,8 +127,8 @@ function error(err) {
     console.log(err);
 }
 
+//Search TV Show
 function getTV() {
-
     let name = $("#tvShowName").val();
     let method = "3/search/tv?";
     let moreParams = "&language=en-US&page=1&include_adult=false&";
@@ -152,27 +149,10 @@ function getTVSuccessCB(tv) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /TV SEARCH RESAULTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 
-//Rand the seasons of the TV Show
+//put the ID of the show in local storage to use in 'seriesses.html'
 function randSeasons(id) {
-    //Creation of series object
-    let apiTv = "https://api.themoviedb.org/3/tv/" + id + "?api_key=fe72ae4f33f6eb8a2b98a62fb320f4ec&language=en-US";
-    ajaxCall("GET", apiTv, "", getSpecificTvSuccessCB, error);
-}
-
-//get specific tv show SUCCESS
-function getSpecificTvSuccessCB(tv) {
-    tv_show = tv; //make it global
-
-    //Creation of a series object --> local storage to pull in serieses (series presentation)
-    ser = {
-        Id: tv_show.id,
-        First_air_date: tv_show.air_date,
-        Name: tv_show.name,
-        Origin_country: tv_show.origin_country[0],
-        Original_language: tv_show.original_language,
-        Overview: tv_show.overview,
-        Popularity: tv_show.overview,
-        Poster_path: tv_show.poster_path
+    let ser = {
+        Id: id
     }
     localStorage.ser = JSON.stringify(ser);
     window.location.href = "serieses.html";
