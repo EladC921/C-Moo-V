@@ -26,20 +26,21 @@ namespace WebApplication1.Models
         public string Img { get => img; set => img = value; }
         public string Description { get => description; set => description = value; }
        
-
+        //insert episode to DB
         public int Insert()
         {
             DataServices ds = new DataServices();  
             return ds.Insert(this);
         }
-     
 
+        //GET episodes based on user preferences of certain series 
         public List<Episode> Get(int uId, int sId)
         {
             DataServices ds = new DataServices();
             return ds.GetEpPref(uId, sId);
         }
 
+        //DELETE episode from user preferences
         public void Remove(int uId, int eId) {
             DataServices ds = new DataServices();
             ds.RemoveEp(uId, eId);

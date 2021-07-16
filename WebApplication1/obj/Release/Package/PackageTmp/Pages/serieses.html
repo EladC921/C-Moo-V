@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>C-Moo-V</title>
+
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
+    <!-- serieses css -->
+    <link rel="stylesheet" href="../css/serieses.css" />
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+    <!-- ICON -->
+    <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png" />
+
+    <!-- Links -->
+    <link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../css/styles.css" rel="stylesheet" />
+
+
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="../js/scripts.js"></script>
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <!-- * *                               SB Forms JS                               * *-->
+    <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <!--**** Remember to add the database script ***-->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/status.js"></script>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <script src="../js/seriesses.js"></script>
+</head>
+<!-- BODY -->
+<body id="page-top">
+    <!-- START PAGE SOURCE -->
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg bg-nav text-uppercase fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="#page-top">
+                C-Moo-V
+            </a>
+            <div class="text-secondary" id="welcome" href="#page-top"></div>
+
+
+            <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <!-- MENU ITEMS -->
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul id="nav-items-title" class="navbar-nav ms-auto">
+                    <li class="nav-item mx-0 mx-lg-1" id="view"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">View My Episodes</a></li>
+                    <li class="nav-item mx-0 mx-lg-1" id="search"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">Back to Search</a></li>
+                    <li class="nav-item mx-0 mx-lg-1" id="logout"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Masthead-->
+    <header class="masthead bg-dark text-white text-center ">
+        <div class="container d-flex align-items-center flex-column ">
+            <!-- ICON -->
+            <div id="ph-present"> </div>
+            <div id="ph-div">
+                <div class="row form-group">
+                    <div id="chat-panel" class="col-xs-12 col-md-offset-2 col-md-8 col-lg-8 col-lg-offset-2">
+                        <div id="ph-fans" class="fans"></div>
+                        <div class="panel panel-primary">
+                            <div class="bg-cmv-chat">
+                                <h3>Fan Chat</h3>
+                            </div>
+                            <div class="panel-body body-panel">
+                                <ul id="newChat" class="chat">
+
+                                    <li class="right clearfix">
+                                        <span class="chat-img pull-right">
+                                            <img src="https://via.placeholder.com/50/FFFF00/000000?text=ADMIN" alt="User Avatar" class="img-circle" />
+                                        </span>
+                                        <div class="chat-body clearfix">
+                                            <div class="header">
+
+                                            </div>
+                                            <p id="messageCont">
+                                                Welcome to the series fan chat, Please keep good language and listen to the terms of this service. Have a good day!
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="panel-footer clearfix">
+                                <input type="text" id="message" class="form-control" rows="3" />
+                                <span class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-xs-12" style="margin-top: 10px">
+                                    <button class="btn btn-warning btn-lg btn-block" onclick="AddMSG()" id="btn-chat">Send</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Heading-->
+        </div>
+    </header>
+    <!-- RENDERING -->
+    <div class="container" id="ph-container">
+        <h1 class="masthead-heading text-uppercase mb-0">
+            ACTORS
+        </h1>
+        <div id="ph-actors"></div>
+        <h1 class="masthead-heading text-uppercase mb-0">
+            SEASONS
+        </h1>
+        <div id="ph-seasons"> </div>
+        <div id="ph-present1"> </div>
+        <div id="ph-eps">
+
+        </div>
+        <div id="ph-spd"> </div>
+        <!--The base of the comment section-->
+        <div id="ph-sss">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="post-content">
+                            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+                            <input id="pComment" type="text" class="form-control" placeholder="Create Post">
+                            <button class="btn btn-primary btn-xl enabled" id="submitButton" style="align-content:center" onclick="AddPost()" type="submit">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
+    <div id="ph-status" class="makeitabstract"></div>
+    <!-- Footer-->
+    <footer class="footer text-center">
+        <div class="container">
+            <div class="row">
+                <!-- Footer Location-->
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Location</h4>
+                    <p class="lead mb-0">
+                        Ruppin Academic Center
+                        <br />
+                        IL
+                    </p>
+                </div>
+                <!-- Footer Social Icons-->
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Around the Web</h4>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/Ruppin.Academic.Center/" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.instagram.com/ruppin/" target="_blank"><i class="fab fa-fw fa-instagram"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/ruppin/" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
+                </div>
+                <!-- Footer About Text-->
+                <div class="col-lg-4">
+                    <h4 class="text-uppercase mb-4">About C-Moo-V</h4>
+                    <p class="lead mb-0">
+                        C-Moo-V is free to use, Here you can create a list of your favorite episodes!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Copyright Section-->
+    <div id="copyright" class="copyright py-5 text-center text-white">
+        <div class="container"><small>Copyright &copy; C-Moo-V 2021</small></div>
+    </div>
+</body>
+</html>

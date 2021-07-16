@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>C-Moo-V</title>
+
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <style type="text/css">
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Carousel - Style ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+        /* The heart of the matter */
+        .testimonial-group > .row {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+
+            .testimonial-group > .row > .col-xs-4 {
+                display: inline-block;
+                float: none;
+            }
+
+        .card {
+            float: left;
+        }
+
+            .card:hover {
+                cursor: pointer;
+            }
+
+            .card img {
+                width: 100%;
+            }
+
+        .row > * {
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 100%;
+            padding-right: calc(var(--bs-gutter-x) / 2);
+            padding-left: calc(var(--bs-gutter-x) / 2);
+            margin-top: var(--bs-gutter-y);
+        }
+
+        .mx-2 {
+            margin-right: 0.5rem !important;
+            margin-left: 0.5rem !important;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        /* .row > .col {
+            width: 100%;
+            display: block;
+        }
+
+        .col img {
+            height: auto;
+        }*/
+
+        /* Decorations */
+        .col-xs-4 {
+            color: #fff;
+            font-size: 48px;
+            padding-bottom: 20px;
+            padding-top: 18px;
+        }
+
+        /*scroll-bar-css*/
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: rgba(102, 93, 102,0.3);
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #8a633b;
+        }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Carousel style ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    </style>
+
+    <!-- ICON -->
+    <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png" />
+
+    <!-- Links -->
+    <link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../css/styles.css" rel="stylesheet" />
+
+
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="../js/scripts.js"></script>
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <!-- * *                               SB Forms JS                               * *-->
+    <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+    <!--My Scripts-->
+    <script>
+
+    </script>
+</head>
+<body>
+
+    <div class="movie_card" id="bright">
+        <div class="info_section">
+            <div class="movie_header">
+                <img class="locandina" src="https://movieplayer.net-cdn.it/t/images/2017/12/20/bright_jpg_191x283_crop_q85.jpg" />
+                <h1>Bright</h1>
+                <h4>2017, David Ayer</h4>
+                <span class="minutes">117 min</span>
+                <p class="type">Action, Crime, Fantasy</p>
+            </div>
+            <div class="movie_desc">
+                <p class="text">
+                    Set in a world where fantasy creatures live side by side with humans. A human cop is forced to work with an Orc to find a weapon everyone is prepared to kill for.
+                </p>
+            </div>
+            <div class="movie_social">
+                <ul>
+                    <li><i class="material-icons">share</i></li>
+                    <li><i class="material-icons"></i></li>
+                    <li><i class="material-icons">chat_bubble</i></li>
+                </ul>
+            </div>
+        </div>
+        <div class="blur_back bright_back"></div>
+    </div>
+
+    <div class="movie_card" id="tomb">
+        <div class="info_section">
+            <div class="movie_header">
+                <img class="locandina" src="https://mr.comingsoon.it/imgdb/locandine/235x336/53750.jpg" />
+                <h1>Tomb Raider</h1>
+                <h4>2018, Roar Uthaug</h4>
+                <span class="minutes">125 min</span>
+                <p class="type">Action, Fantasy</p>
+            </div>
+            <div class="movie_desc">
+                <p class="text">
+                    Lara Croft, the fiercely independent daughter of a missing adventurer, must push herself beyond her limits when she finds herself on the island where her father disappeared.
+                </p>
+            </div>
+            <div class="movie_social">
+                <ul>
+                    <li><i class="material-icons">share</i></li>
+                    <li><i class="material-icons"></i></li>
+                    <li><i class="material-icons">chat_bubble</i></li>
+                </ul>
+            </div>
+        </div>
+        <div class="blur_back tomb_back"></div>
+    </div>
+
+    <div class="movie_card" id="ave">
+        <div class="info_section">
+            <div class="movie_header">
+                <img class="locandina" src="https://mr.comingsoon.it/imgdb/locandine/235x336/53715.jpg" />
+                <h1>Black Panther</h1>
+                <h4>2018, Ryan Coogler</h4>
+                <span class="minutes">134 min</span>
+                <p class="type">Action, Adventure, Sci-Fi</p>
+            </div>
+            <div class="movie_desc">
+                <p class="text">
+                    T'Challa, the King of Wakanda, rises to the throne in the isolated, technologically advanced African nation, but his claim is challenged by a vengeful outsider who was a childhood victim of T'Challa's father's mistake.
+                </p>
+            </div>
+            <div class="movie_social">
+                <ul>
+                    <li><i class="material-icons">share</i></li>
+                    <li><i class="material-icons"></i></li>
+                    <li><i class="material-icons">chat_bubble</i></li>
+                </ul>
+            </div>
+        </div>
+        <div class="blur_back ave_back"></div>
+    </div>
+
+
+
+</body>
+</html>

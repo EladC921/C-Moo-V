@@ -20,6 +20,7 @@ namespace WebApplication1.Models
         public char Gender { get => gender; set => gender = value; }
         public string Profile_path { get => profile_path; set => profile_path = value; }
 
+        //insert actors of series into DB
         public void Insert(List<Actor> actors)
         {
             DataServices ds = new DataServices();

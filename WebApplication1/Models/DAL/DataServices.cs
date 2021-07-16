@@ -9,8 +9,6 @@ using System.Text.RegularExpressions;
 
 namespace WebApplication1.Models.DAL
 {
-
-
     public class DataServices
     {
         public SqlDataAdapter da;
@@ -181,11 +179,10 @@ namespace WebApplication1.Models.DAL
                 {
                     con.Close();
                 }
-
             }
-
         }
 
+        //returns recommendations OR preferences of series
         public List<Serie> GetSerPref(int uId, string type)
         {
             SqlConnection con = null;
@@ -252,6 +249,7 @@ namespace WebApplication1.Models.DAL
             }
         }
 
+        //returns a list of fav episodes based on series (in 'view.html')
         public List<Episode> GetEpPref(int uId, int sId)
         {
             SqlConnection con = null;
@@ -301,7 +299,7 @@ namespace WebApplication1.Models.DAL
 
         }
 
-        //GET users List for admin
+        //GET users List for 'adminView.html'
         public List<User> GetUList()
         {
             SqlConnection con = null;
@@ -345,12 +343,10 @@ namespace WebApplication1.Models.DAL
                 {
                     con.Close();
                 }
-
             }
-
         }
 
-
+        //Get num of users that like each series OR num of users that likes specific episodes to 'adminView.html'
         public List<Preference> GetTotalPref(string type)
         {
 
@@ -379,7 +375,6 @@ namespace WebApplication1.Models.DAL
 
                     prefList.Add(p);
                 }
-
                 return prefList;
             }
             catch (Exception ex)
@@ -455,6 +450,7 @@ namespace WebApplication1.Models.DAL
             }
         }
 
+        //remove episode from preferences of user in 'view.html'
         public void RemoveEp(int uId, int eId)
         {
             SqlConnection con;
@@ -500,7 +496,7 @@ namespace WebApplication1.Models.DAL
             }
         }
 
-
+        //reutrns if certein user is a fan --> for premission to write in 'fan chat'
         public int CheckSerPref(int uId, int sId)
         {
             SqlConnection con = null;
@@ -534,7 +530,7 @@ namespace WebApplication1.Models.DAL
             }
         }
 
-        //GET users List for admin
+        //GET fans of specific series for 'seriesses.html'
         public List<User> GetUList(int sId)
         {
             SqlConnection con = null;

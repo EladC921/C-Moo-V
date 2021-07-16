@@ -1,0 +1,97 @@
+﻿
+#statusTbl {
+    position: absolute;
+    right: 100px;
+    bottom: 50px;
+}
+
+#welcome {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.smaller {
+    height: 70%;
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Carousel - Style ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* The heart of the matter */
+.testimonial-group > .row {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+
+    .testimonial-group > .row > .col-xs-4 {
+        display: inline-block;
+        float: none;
+    }
+
+.card {
+    float: left;
+}
+
+    .card:hover {
+        cursor: pointer;
+    }
+
+    .card img {
+        width: 100%;
+    }
+
+.row > * {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x) / 2);
+    padding-left: calc(var(--bs-gutter-x) / 2);
+    margin-top: var(--bs-gutter-y);
+}
+
+.mx-2 {
+    margin-right: 0.5rem !important;
+    margin-left: 0.5rem !important;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+/* .row > .col {
+            width: 100%;
+            display: block;
+        }
+
+        .col img {
+            height: auto;
+        }*/
+
+/* Decorations */
+.col-xs-4 {
+    color: #fff;
+    font-size: 48px;
+    padding-bottom: 20px;
+    padding-top: 18px;
+}
+
+/*scroll-bar-css*/
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: rgba(102, 93, 102,0.3);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #8a633b;
+}
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of Carousel style ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

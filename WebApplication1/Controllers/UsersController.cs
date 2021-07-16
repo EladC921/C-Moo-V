@@ -10,13 +10,14 @@ namespace WebApplication1.Controllers
 {
     public class UsersController : ApiController
     {
-
+        //GET users list
         public IEnumerable<User> Get()
         {
             User u = new User();
             return u.GetUList();
         }
 
+        //GET fans list
         [Route("api/Users/fans/{sId}")]
         public IEnumerable<User> Get(int sId)
         {
@@ -24,6 +25,7 @@ namespace WebApplication1.Controllers
             return u.GetUList(sId);
         }
 
+        //GET login details
         public HttpResponseMessage Get(string mail, string password)
         {
             User u = new User();
@@ -33,8 +35,7 @@ namespace WebApplication1.Controllers
             return Request.CreateResponse(HttpStatusCode.NotFound, "Email address or Password is incorrect");
         }
 
-
-        // POST api/<controller>
+        // POST user
         public HttpResponseMessage Post([FromBody] User user)
         {
             int numOfEffected = user.Insert();

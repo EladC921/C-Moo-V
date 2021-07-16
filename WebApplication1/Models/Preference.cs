@@ -16,6 +16,7 @@ namespace WebApplication1.Models
         public string EpName { get => epName; set => epName = value; }
         public int NumOfUsers { get => numOfUsers; set => numOfUsers = value; }
 
+        //GET num of users that like specific episode or certain series 
         public List<Preference> Get(string type)
         {
             DataServices ds = new DataServices();

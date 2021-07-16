@@ -10,7 +10,7 @@ namespace WebApplication1.Controllers
 {
     public class PreferencesController : ApiController
     {
-        // GET api/<controller>?type='hello world'
+        // GET num of users that like series OR specific episode
         public IEnumerable<Preference> Get(string type)
         {
             Preference p = new Preference();

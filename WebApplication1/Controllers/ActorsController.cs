@@ -22,7 +22,7 @@ namespace WebApplication1.Controllers
             return "value";
         }
 
-        // POST api/<controller>
+        // POST Actors list
         public void Post([FromBody]List<Actor> actors)
         {
             Actor a = new Actor();
