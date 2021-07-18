@@ -104,7 +104,7 @@ function removeEp(eId) {
     ajaxCall("DELETE", api, "", deleteEpSuccessCB, error)
 }
 
-//delete success
+//Delete success
 function deleteEpSuccessCB() {
     renderEpsBySer(opt); //re-rendering eps
 }
