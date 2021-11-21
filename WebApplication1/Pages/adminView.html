@@ -1,51 +1,24 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>C-Moo-V</title>
 
-    <style>
-        #welcome {
-            color: red;
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            padding-left: 5px;
-            font-size: 15px;
-        }
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
-        #logout {
-        }
+    <script src="../Scripts/ajaxCalls.js"></script>
 
-        #buttons {
-            margin: 10px;
-            text-align: left;
-        }
+    <!-- admin page css-->
+    <link rel="stylesheet" href="../css/adminView.css" />
 
-        #userTbl, #epTbl, #serTbl {
-            margin-left: 10px;
-            margin-right: 10px;
-   
-        }
+    <!-- ICON -->
+    <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png" />
 
-        #usersTable, #epTable, #serTable {
-            border: solid 1px black;
-        }
-
-        #usersData {
-            padding-top: 5px;
-        }
-
-        #epTbl, #serTbl {
-            width: 50%;
-            float: left;
-        }
-
-        .block {
-            float: left;
-            width: 100%;
-            display: flex;
-        }
-    </style>
-
+    <!-- Links -->
+    <link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
@@ -56,163 +29,168 @@
     <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="../scripts/ajaxCalls.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#logout").click(function () {
-                localStorage.clear();
-                window.location.href = "homePage.html";
-            })
-            userTbl = "";
-            epTbl = "";
-            loadUserTable();
-            loadEpTable();
-            loadSerTable();
-
-        })
-
-        //AJAX to load users table
-        function loadUserTable() {
-            let api = "../api/Users";
-            ajaxCall("GET", api, "", getUserSuccessCB, error);
-        }
-
-        //AJAX to load episodes table
-        function loadEpTable() {
-            let api = "../api/Preferences?type=Episodes";
-            ajaxCall("GET", api, "", getEpSuccessCB, error);
-        }
-
-        //AJAX to load seriess table
-        function loadSerTable() {
-            let api = "../api/Preferences?type=Series";
-            ajaxCall("GET", api, "", getSerSuccessCB, error);
-        }
-
-        //Global Error function
-        function error(err) {
-            console.log(err);
-        }
-
-        //Get Users List Success
-        function getUserSuccessCB(userList) {
-            console.log(userList);
-
-            try {
-                userTbl = $('#usersTable').DataTable({
-                    data: userList,
-                    pageLength: 5,
-                    columns: [
-
-                        { data: "Id" },
-                        { data: "Name" },
-                        { data: "Sername" },
-                        { data: "Mail" },
-                        { data: "Pass" },
-                        { data: "Phone" },
-                        { data: "Gender" },
-                        { data: "BirthYear" },
-                        { data: "FavGenre" },
-                        { data: "Address" },
-                    ],
-                });
-            }
-            catch (err) {
-                alert(err);
-            }
-        }
-
-        //Get Episode List Success
-        function getEpSuccessCB(epList) {
-            console.log(epList);
-            try {
-                epTbl = $('#epTable').DataTable({
-                    data: epList,
-                    pageLength: 5,
-                    columns: [
-                        { data: "SerName" },
-                        { data: "EpName" },
-                        { data: "NumOfUsers" },
-                    ],
-                });
-            }
-            catch (err) {
-                alert(err);
-            }
-        }
-
-        //Get Series List Success
-        function getSerSuccessCB(serList) {
-            console.log(serList);
-            try {
-                serTbl = $('#serTable').DataTable({
-                    data: serList,
-                    pageLength: 5,
-                    columns: [
-                        { data: "SerName" },
-                        { data: "NumOfUsers" },
-                    ],
-                });
-            }
-            catch (err) {
-                alert(err);
-            }
-        }
 
 
-    </script>
+
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../css/styles.css" rel="stylesheet" />
+
+
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="../js/scripts.js"></script>
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <!-- * *                               SB Forms JS                               * *-->
+    <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <!--**** Remember to add the database script ***-->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/status.js"></script>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <script src="../js/adminView.js"></script>
 </head>
-<body>
-    <div id="buttons">
-        <button id="logout">Logout</button>
-        <p id="welcome">Hello Admin</p>
-    </div>
-    <!-- USERS TABLE -->
-    <div id="userTbl">
-        <h2 id="usersData">Users Data</h2>
-        <table id="usersTable" class="display nowrap" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Sername</th>
-                    <th>Email</th>
-                    <th>Password</th>
-                    <th>Phone</th>
-                    <th>Gender</th>
-                    <th>Birth Year</th>
-                    <th>Favorite Genre</th>
-                    <th>Address</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-    <div class="block">
-        <!-- EPISODES TABLE -->
-        <div id="epTbl">
-            <h2 id="epData">Episodes Data</h2>
-            <table id="epTable" class="display nowrap" style="width:100%">
+<!-- BODY -->
+<body id="page-top">
+    <!-- START PAGE SOURCE -->
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg bg-nav text-uppercase fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="#page-top">
+                C-Moo-V
+            </a>
+            <div class="text-secondary" id="welcome" href="#page-top"></div>
+
+            <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <!-- MENU ITEMS -->
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item mx-0 mx-lg-1" id="view"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">View as a User</a></li>
+                    <li class="nav-item mx-0 mx-lg-1" id="logout"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Masthead-->
+    <header class="masthead bg-dark text-white text-center ">
+        <div class="container d-flex align-items-center flex-column ">
+            <!-- ICON -->
+            <img class="masthead-avatar mb-5" src="https://i.postimg.cc/4NKvmk5M/sacred-cow.png" alt="..." />
+            <!-- Heading-->
+            <h1 class="masthead-heading text-uppercase mb-0">
+                Hello Admin
+            </h1>
+
+        </div>
+    </header>
+    <div>
+        <div id="userTbl">
+            <h2 id="usersData">Users Data</h2>
+            <table id="usersTable" class="display nowrap" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Series Name</th>
-                        <th>Episode Name</th>
-                        <th>Amount of Users that likes the Episode</th>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Sername</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Gender</th>
+                        <th>Birth Year</th>
+                        <th>Favorite Genre</th>
+                        <th>Address</th>
                     </tr>
                 </thead>
             </table>
         </div>
-        <!-- Series TABLE -->
-        <div id="serTbl">
-            <h2 id="serData">Series Data</h2>
-            <table id="serTable" class="display nowrap" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Series Name</th>
-                        <th>Amount of Users that likes the Episode</th>
-                    </tr>
-                </thead>
-            </table>
+        <div>
+            <div class="block">
+                <!-- EPISODES TABLE -->
+                <div id="epTbl">
+                    <h2 id="epData">Episodes Data</h2>
+                    <table id="epTable" class="display nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Series Name</th>
+                                <th>Episode Name</th>
+                                <th>Amount of Users that likes the Episode</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!-- Series TABLE -->
+                <div id="serTbl">
+                    <h2 id="serData">Series Data</h2>
+                    <table id="serTable" class="display nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Series Name</th>
+                                <th>Amount of Users that likes the Episode</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div id="usersStatus">
+
+            </div>
+            <div id="ph-status" class="makeitabstract"></div>
         </div>
+    </div>
+
+    <!-- RENDERING -->
+    <div class="container">
+
+    </div>
+    <!-- Footer-->
+    <footer class="footer text-center">
+        <div class="container">
+            <div class="row">
+                <!-- Footer Location-->
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Location</h4>
+                    <p class="lead mb-0">
+                        Ruppin Academic Center
+                        <br />
+                        IL
+                    </p>
+                </div>
+                <!-- Footer Social Icons-->
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Around the Web</h4>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/Ruppin.Academic.Center/" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.instagram.com/ruppin/" target="_blank"><i class="fab fa-fw fa-instagram"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/ruppin/" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
+                </div>
+                <!-- Footer About Text-->
+                <div class="col-lg-4">
+                    <h4 class="text-uppercase mb-4">About C-Moo-V</h4>
+                    <p class="lead mb-0">
+                        C-Moo-V is free to use, Here you can create a list of your favorite episodes!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Copyright Section-->
+    <div class="copyright py-4 text-center text-white">
+        <div class="container"><small>Copyright &copy; C-Moo-V 2021</small></div>
     </div>
 </body>
 </html>

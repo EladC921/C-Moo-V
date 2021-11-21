@@ -155,6 +155,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\ActorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PreferencesController.cs" />
     <Compile Include="Controllers\SeriesController.cs" />
@@ -164,6 +165,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Controllers\EpisodesController.cs" />
+    <Compile Include="Models\Actor.cs" />
     <Compile Include="Models\DAL\DataServices.cs" />
     <Compile Include="Models\Episode.cs" />
     <Compile Include="Models\Preference.cs" />
@@ -177,13 +179,29 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="css\adminView.css" />
+    <Content Include="css\homePage.css" />
+    <Content Include="css\insert.css" />
+    <Content Include="css\serieses.css" />
+    <Content Include="css\styles.css" />
+    <Content Include="css\view.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="js\adminView.js" />
+    <Content Include="js\config.js" />
+    <Content Include="js\homePage.js" />
+    <Content Include="js\insert.js" />
+    <Content Include="js\scripts.js" />
+    <Content Include="js\seriesses.js" />
+    <Content Include="js\view.js" />
     <Content Include="Pages\adminView.html" />
     <Content Include="Pages\homePage.html" />
     <Content Include="Pages\insert.html" />
+    <Content Include="Pages\serieses.html" />
+    <Content Include="js\status.js" />
     <Content Include="Pages\view.html" />
+    <Content Include="Pages\viewSerPage.html" />
     <Content Include="Scripts\ajaxCalls.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

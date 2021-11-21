@@ -9,8 +9,6 @@ using System.Text.RegularExpressions;
 
 namespace WebApplication1.Models.DAL
 {
-
-
     public class DataServices
     {
         public SqlDataAdapter da;
@@ -94,16 +92,15 @@ namespace WebApplication1.Models.DAL
                 Episode ep = obj as Episode;
                 sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')", ep.Id, ep.Id_ser, r.Replace(ep.EpName, ""), r.Replace(ep.SerName, ""), ep.SeasonNum, ep.Img, r.Replace(ep.Description, ""));
                 prefix = "INSERT INTO Episodes_2021 " + "([id], [id_ser] , [name], [sername], [season_num], [image], [description]) ";
-                commandPref = "INSERT INTO Preferences_2021 " + "([id_ep], [id_user]) " + "Values(" + ep.Id.ToString() + "," + ep.Id_user.ToString() + ")";
+                commandPref = "IF EXISTS(SELECT id_ep, id_user FROM Preferences_2021 WHERE id_ep = " + ep.Id + " AND id_user = " + ep.Id_user + ") UPDATE Preferences_2021 SET active = 1 WHERE id_ep = "+ ep.Id + " AND id_user = " + ep.Id_user +
+                    " ElSE INSERT INTO Preferences_2021 " + "([id_ep], [id_user], [id_ser], [active]) " + "Values(" + ep.Id.ToString() + "," + ep.Id_user.ToString() + "," + ep.Id_ser.ToString() + ", 1)";
             }
             else if (obj is Serie)
             {
                 Serie ser = obj as Serie;
-                sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')", ser.Id, ser.First_air_date, ser.Name, ser.Origin_country, ser.Original_language, r.Replace(ser.Overview, ""), ser.Popularity, ser.Poster_path);
+                sb.AppendFormat("Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')", ser.Id, ser.First_air_date, r.Replace(ser.Name, ""), ser.Origin_country, ser.Original_language, r.Replace(ser.Overview, ""), ser.Popularity, ser.Poster_path);
                 prefix = "INSERT INTO Series_2021 " + "([id], [first_air_date], [name], [origin_country], [original_language], [overview], [popularity], [poster_path]) ";
             }
-
-
             else
             {
                 User u = obj as User;
@@ -182,21 +179,42 @@ namespace WebApplication1.Models.DAL
                 {
                     con.Close();
                 }
-
             }
-
         }
 
-        public List<Serie> GetSerPref(int uId)
+        //returns recommendations OR preferences of series
+        public List<Serie> GetSerPref(int uId, string type)
         {
-
             SqlConnection con = null;
             List<Serie> serList = new List<Serie>();
             try
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT DISTINCT S.id, S.name FROM Preferences_2021 P inner join Episodes_2021 E on P.id_ep = E.id inner join Series_2021 S on E.id_ser = S.id WHERE P.id_user = " + uId;
+                String selectSTR;
+                if (type.Equals("pref"))
+                    selectSTR = "SELECT DISTINCT S.id 'id_ser', S.first_air_date ,S.name, S.origin_country, S.original_language,  CAST(S.overview AS NVARCHAR(4000)) 'overview', S.popularity, CAST(S.poster_path AS nvarchar(500)) 'poster_path' "
+                               + "FROM Preferences_2021 P inner join Episodes_2021 E on P.id_ep = E.id inner join Series_2021 S on E.id_ser = S.id WHERE P.active = 1 AND P.id_user = " + uId;
+                else
+                    selectSTR = "Declare @id int SET @id =" + uId + " "
+                                + "SELECT TOP(5) COUNT(P.id_user) 'num of users', P.id_ser, S.first_air_date, S.name , S.origin_country, S.original_language, CAST(S.overview AS NVARCHAR(4000)) 'overview', S.popularity, CAST(S.poster_path AS nvarchar(500)) 'poster_path' "
+                                + "FROM(SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P inner join Series_2021 S on S.id = P.id_ser "
+                                + "WHERE P.id_user != @id AND P.id_ser != ALL( "
+                                                                              + "SELECT P1.id_ser "
+                                                                              + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P1 "
+                                                                              + "WHERE  P1.id_user=P.id_user AND EXISTS("
+                                                                                                                         + "SELECT P0.id_user "
+                                                                                                                         + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P0 "
+                                                                                                                         + "WHERE P0.id_user = @id AND P0.id_ser = P1.id_ser)"
+                                + ") AND EXISTS ("
+                                                        + "SELECT TOP(5) P2.id_user, COUNT(P2.id_ser) 'N' FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P2 "
+                                                        + "WHERE  P2.id_user=P.id_user AND P2.id_user!=@id AND EXISTS("
+                                                                                            + "SELECT P3.id_user "
+                                                                                            + "FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P3 "
+                                                                                            + "WHERE P3.id_user = @id AND P3.id_ser = P2.id_ser)"
+                                                        + "GROUP BY P2.id_user ORDER BY 'N' DESC)"
+                                + "GROUP BY P.id_ser, S.first_air_date, S.name , S.origin_country, S.original_language, CAST(S.overview AS NVARCHAR(4000)), S.popularity, CAST(S.poster_path AS nvarchar(500)) "
+                                + "ORDER BY 'num of users' DESC";
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
                 // get a reader
@@ -205,11 +223,16 @@ namespace WebApplication1.Models.DAL
                 while (dr.Read())
                 {   // Read till the end of the data into a row
                     Serie ser = new Serie();
-                    ser.Id = (int)(dr["id"]);
+                    ser.Id = (int)(dr["id_ser"]);
+                    ser.First_air_date = (string)(dr["first_air_date"]);
                     ser.Name = (string)(dr["name"]);
+                    ser.Origin_country = (string)(dr["origin_country"]);
+                    ser.Original_language = (string)(dr["original_language"]);
+                    ser.Overview = (string)(dr["overview"]);
+                    ser.Popularity = Convert.ToSingle(dr["popularity"]);
+                    ser.Poster_path = (string)(dr["poster_path"]);
                     serList.Add(ser);
                 }
-
                 return serList;
             }
             catch (Exception ex)
@@ -223,14 +246,12 @@ namespace WebApplication1.Models.DAL
                 {
                     con.Close();
                 }
-
             }
-
         }
 
+        //returns a list of fav episodes based on series (in 'view.html')
         public List<Episode> GetEpPref(int uId, int sId)
         {
-
             SqlConnection con = null;
             List<Episode> episodeList = new List<Episode>();
 
@@ -238,7 +259,7 @@ namespace WebApplication1.Models.DAL
             {
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
 
-                String selectSTR = "SELECT E.* FROM Preferences_2021 P inner join Episodes_2021 E on P.id_ep = E.id inner join Series_2021 S on E.id_ser = S.id WHERE P.id_user =" + uId + " AND S.id = " + sId;
+                String selectSTR = "SELECT E.* FROM Preferences_2021 P inner join Episodes_2021 E on P.id_ep = E.id inner join Series_2021 S on E.id_ser = S.id WHERE P.active = 1 AND P.id_user =" + uId + " AND S.id = " + sId;
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
                 // get a reader
@@ -278,8 +299,7 @@ namespace WebApplication1.Models.DAL
 
         }
 
-
-        //GET users List for admin
+        //GET users List for 'adminView.html'
         public List<User> GetUList()
         {
             SqlConnection con = null;
@@ -311,7 +331,6 @@ namespace WebApplication1.Models.DAL
                     uList.Add(u);
                 }
                 return uList;
-
             }
             catch (Exception ex)
             {
@@ -324,12 +343,10 @@ namespace WebApplication1.Models.DAL
                 {
                     con.Close();
                 }
-
             }
-
         }
 
-
+        //Get num of users that like each series OR num of users that likes specific episodes to 'adminView.html'
         public List<Preference> GetTotalPref(string type)
         {
 
@@ -339,9 +356,9 @@ namespace WebApplication1.Models.DAL
                 con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
                 String selectSTR = "";
                 selectSTR = (string.Equals(type, "Episodes")) ?
-                      "SELECT S.name 'Series Name', E.name 'Episode Name', COUNT(P.id_user) 'num of users' FROM Series_2021 S inner join Episodes_2021 E on E.id_ser = S.id inner join Preferences_2021 P on E.id = P.id_ep GROUP BY S.name, E.name Order BY[num of users] DESC" :
-                      "SELECT S.name 'Series Name', COUNT(P.id_user) 'num of users' FROM Series_2021 S inner join Episodes_2021 E on E.id_ser = S.id inner join Preferences_2021 P on E.id = P.id_ep GROUP BY S.name Order BY[num of users] DESC";
-                 
+                      "SELECT S.name 'Series Name', E.name 'Episode Name', COUNT(P.id_user) 'num of users' FROM Series_2021 S inner join Episodes_2021 E on E.id_ser = S.id inner join Preferences_2021 P on E.id = P.id_ep WHERE P.active = 1 GROUP BY S.name, E.name Order BY[num of users] DESC" :
+                      "SELECT id_ser, S.name 'Series Name', COUNT(id_user) 'num of users' FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active = 1) P inner join Series_2021 S on P.id_ser = S.id  GROUP BY id_ser, S.name Order BY[num of users] DESC";
+
                 SqlCommand cmd = new SqlCommand(selectSTR, con);
 
                 // get a reader
@@ -358,7 +375,6 @@ namespace WebApplication1.Models.DAL
 
                     prefList.Add(p);
                 }
-
                 return prefList;
             }
             catch (Exception ex)
@@ -372,10 +388,186 @@ namespace WebApplication1.Models.DAL
                 {
                     con.Close();
                 }
+            }
+        }
 
+        //Insert Actors list to DB
+        public int InsertActors(List<Actor> actors)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
             }
 
+            while (true)
+            {
+                String cStr = "";
+                Regex r = new Regex(@"('|\(|\))", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+                foreach (Actor a in actors)
+                {
+                    cStr += "INSERT INTO Actors_2021 ";
+                    cStr += "VALUES (" + a.Id + ", '" + r.Replace(a.Name, "") + "' , '" + a.Gender + "' , '" + a.Profile_path + "') ";   // String command
+                    cStr += "INSERT INTO ActorInSer_2021 ";
+                    cStr += "VALUES (" + a.Id + "," + a.Ser_id + ") ";   // String command
+                }
+
+                cmd = CreateCommand(cStr, con);             // create the command
+
+                try
+                {
+                    int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                }
+                catch (SqlException ex)
+                {
+                    //To check if there is viaolation of mult emails of keys
+                    if (ex.Number != 2627 && ex.Number != 2601)
+                        throw;
+                }
+                catch (Exception ex)
+                {
+                    // write to log
+                    throw (ex);
+                }
+
+                finally
+                {
+                    if (con != null)
+                    {
+                        // close the db connection
+                        con.Close();
+                    }
+                }
+                return 1;
+            }
+        }
+
+        //remove episode from preferences of user in 'view.html'
+        public void RemoveEp(int uId, int eId)
+        {
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            String cStr = "UPDATE Preferences_2021 SET active = 0 WHERE id_ep = " + eId + " AND id_user = " + uId; //string command
+
+            cmd = CreateCommand(cStr, con);             // create the command
+
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            }
+            catch (SqlException ex)
+            {
+                //To check if there is viaolation of mult emails of keys
+                if (ex.Number != 2627 && ex.Number != 2601)
+                    throw;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+        }
+
+        //reutrns if certein user is a fan --> for premission to write in 'fan chat'
+        public int CheckSerPref(int uId, int sId)
+        {
+            SqlConnection con = null;
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT * FROM Preferences_2021 WHERE id_ser=" + sId + " AND id_user=" + uId + " AND active=1";
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    if ((int)(dr["id_ser"]) == sId) return 1;
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        //GET fans of specific series for 'seriesses.html'
+        public List<User> GetUList(int sId)
+        {
+            SqlConnection con = null;
+
+            try
+            {
+                con = connect("DBConnectionString"); // create a connection to the database using the connection String defined in the web config file
+
+                String selectSTR = "SELECT U.name, U.sername FROM (SELECT DISTINCT id_user, id_ser FROM Preferences_2021 WHERE active=1) P inner join Users_2021 U on u.id = P.id_user WHERE P.id_ser=" + sId;
+                SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+                // get a reader
+                SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+                List<User> uList = new List<User>();
+
+                //Break in the end - suppose to return 1 or 0 rows
+                while (dr.Read())
+                {   // Read till the end of the data into a row
+                    User u = new User();
+                    u.Name = (string)dr["name"];
+                    u.Sername = (string)dr["sername"];
+                    uList.Add(u);
+                }
+                return uList;
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
         }
     }
-
 }

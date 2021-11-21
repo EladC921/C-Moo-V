@@ -1,379 +1,163 @@
-﻿<!DOCTYPE html>
-<html>
+﻿checkPref<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>C-Moo-V</title>
 
-    <style type="text/css">
-        .scrolling-wrapper {
-            overflow-x: auto;
-        }
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
-        body {
-            background-color: black;
-            color: #fff;
-            font-family: 'system-ui';
-        }
-
-        h1 {
-            font-weight: 800;
-            font-size: 3em;
-        }
-
-        .subtitle {
-            font-size: 1.25em;
-            opacity: 0.65;
-        }
-
-        .card-block {
-            height: 250px;
-            background-color: #fff;
-            border: none;
-            background-position: center;
-            background-size: cover;
-            transition: all 0.2s ease-in-out !important;
-            border-radius: 24px;
-           
-        }
-
-        hover {
-            transform: translateY(-5px);
-            box-shadow: none;
-        }
-        #pic {
-            width:20px;
-            height:25px;
-        }
-       
-
-     
-
-    
-
-        #ph > img {
-            height: 300px;
-        }
-
-        html, body {
-            background-image: url('https://images.freecreatives.com/wp-content/uploads/2016/04/Solid-Colors-Wallpaper-Background-.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            height: 100%;
-            font-family: 'Numans', sans-serif;
-        }
-
-        #seasonDiv img {
-            height: 200px;
-        }
-
-        #custom-search-input {
-            margin-top: 25px;
-            margin-left: 0px;
-            margin-right: 0px;
-        }
-
-        .container {
-        }
-
-        .card-block {
-            min-height: 220px;
-        }
-    </style>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-            crossorigin="anonymous">
-    </script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="../Scripts/ajaxCalls.js"></script>
+    <!-- insert style -->
+    <link rel="stylesheet" href="../css/insert.css" />
 
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <!-- ICON -->
+    <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png" />
 
-    <script>
-
-        // https://api.themoviedb.org/3/search/tv?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US&page=1&include_adult=false&query=Grey%27s%20Anatomy
-
-        seasons = [];
-        $(document).ready(function () {
-            if (localStorage.user != null) { //if user already logged in, details saved -> auto-login
-                user = JSON.parse(localStorage.user);
-                console.log(user);
-                startUp(user);
-                //  alert("Hello " + user.Name + " " + user.Sername);
-            }
-            //linkssssss
-            //logout -> clear localStorage and return to homepage
-            $("#logout").click(function () {
-                localStorage.clear();
-                window.location.href = "homePage.html";
-            })
-
-            $("#getTV").click(getTV);
-
-            //key from tmdb
-            key = "fe72ae4f33f6eb8a2b98a62fb320f4ec";
-            api_key = "api_key=" + key;
-
-            url = "https://api.themoviedb.org/";
-            imagePath = "https://image.tmdb.org/t/p/w500/";
-
-            //https://api.themoviedb.org/3/tv/1416/season/0/episode/64467?api_key=1c107f2bd2f3fc2aee24aa4f2f8d8647&language=en-US
-
-            $("#view").click(function () {
-                window.location.href = "view.html";
-            })
-        });
-        function startUp(user) {
-            console.log(user);
-            let str = "";
-            str += '<li class="active"><a >' + "Hello" + " " + user.Name + " " + user.Sername + '</a></li>'
-            document.getElementById("theHead").innerHTML += str
-        }
-        function getTV() {
-
-            let name = $("#tvShowName").val();
-            let method = "3/search/tv?";
-            let moreParams = "&language=en-US&page=1&include_adult=false&";
-            let query = "query=" + encodeURIComponent(name);
-
-            let apiCall = url + method + api_key + moreParams + query;
-            ajaxCall("GET", apiCall, "", getTVSuccessCB, getTVErrorCB);
-        }
-
-        // TV Success
-
-        function getTVSuccessCB(tv) {
+    <!-- Links -->
+    <link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 
-            console.log(tv);
-            tvId = tv.results[0].id;
-            tv_poster_path = tv.results[0].poster_path;
-            let poster = imagePath + tv_poster_path;
-            let pic = "<img src='" + poster + "' /> ";
-
-            //get tv Series object details for later insert to Series Object
-            tvName = tv.results[0].name;
-            let tv_firstAirDate = tv.results[0].first_air_date;
-            let tv_origin_country = tv.results[0].origin_country;
-            let tv_original_language = tv.results[0].original_language;
-            let tv_overview = tv.results[0].overview;
-            let tv_popularity = tv.results[0].popularity;
-
-            //Creation of Series Object for later ajax call
-            ser = {
-                Id: tvId,
-                First_air_date: tv_firstAirDate,
-                Name: tvName,
-                Origin_country: tv_origin_country[0],
-                Original_language: tv_original_language,
-                Overview: tv_overview,
-                Popularity: tv_popularity,
-                Poster_path: tv_poster_path
-            }
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../css/styles.css" rel="stylesheet" />
 
 
-            //add image to html
-          $("#pic").html(pic);
-            let method = "3/tv/";
-
-          //  $("#ph").append('<div class="col-5" id = "seasonDiv"></div>');
-
-            i = 1; //global index to recieve the season number
-            apiCall = url + method + tvId + "/season/";
-            ajaxCall("GET", apiCall + i + "?" + api_key, "", getSeasonSuccessCB, getSeasonErrorCB);
-
-
-        }
-
-        // Season Success
-        function getSeasonSuccessCB(season) {
-            seasons[season.id] = season; //create a JSON of seasons - search by key which is the season ID
-            console.log(seasons[season.id])
-            let poster = imagePath + season.poster_path;
-            let str = "<img src='" + poster + "' /> ";
-            let overview = "<p>" + season.overview + "</p>";
-            let name = "<h3>" + season.name + "</h3>";
-
-            $("#ph").append("<div class='col-5'>"+"<div class='card card - block ' id=" + season.id + " onclick='generateEps(this.id)'>" + name + str + overview + "</div></div>");
-
-            console.log(season);
-            i++;
-            ajaxCall("GET", apiCall + i + "?" + api_key, "", getSeasonSuccessCB, getSeasonErrorCB);
-        }
-
-        function generateEps(seasonId) {
-            $("#seasonDiv").html("");
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="../js/scripts.js"></script>
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <!-- * *                               SB Forms JS                               * *-->
+    <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 
 
-            j = 1; //episodes global index
-            season_id = seasonId;
-            seasonNum = seasons[seasonId].season_number;
-            apiCallEp = apiCall + seasonNum + "/episode/";
-            ajaxCall("GET", apiCallEp + j + "?" + api_key, "", getEpisodeSuccessCB, getEpisodeErrorCB);
-
-        }
-
-
-        //Season Error
-        function getSeasonErrorCB(err) {
-            console.log(err);
-        }
-
-        //Tv series Error
-        function getTVErrorCB(err) {
-            console.log(err);
-        }
-
-        //Episode Success
-        function getEpisodeSuccessCB(episode) {
-            console.log(episode);
-
-            let name = "<h3>" + episode.name + "</h3>";
-            let poster = imagePath + episode.still_path;
-            let str = "<img src='" + poster + "' /> ";
-            let overview = "<p>" + episode.overview + "</p>";
-            let airDate = "<b>Air Date: " + episode.air_date + "</b></br>";
-            let button = "<button value=" + episode.episode_number + " onclick='insert(this.value)'>Insert</button>"
-
-            $("#ph1").append("<div>" + name + str + overview + airDate + button + "</div>");
-
-            j++;
-            ajaxCall("GET", apiCallEp + j + "?" + api_key, "", getEpisodeSuccessCB, getEpisodeErrorCB);
-        }
-
-        //Episode Error
-        function getEpisodeErrorCB(err) {
-            console.log(err);
-        }
-
-        function insert(value) {
-            console.log(seasons)
-
-
-            console.log(value);
-            value = value - 1;
-            console.log(seasons[season_id].episodes[value])
-
-
-            console.log("-------------------------");
-            console.log(ser);
-
-            //Creation of episode object
-            ep = {
-                Id: seasons[season_id].episodes[value].id,
-                Id_user: user.Id,
-                EpName: seasons[season_id].episodes[value].name,
-                Id_ser: tvId,
-                SerName: tvName,
-                SeasonNum: seasons[season_id].season_number,
-                Img: imagePath + seasons[season_id].episodes[value].still_path,
-                Description: seasons[season_id].episodes[value].overview + "\nAir Date: " + seasons[season_id].episodes[value].air_date
-            }
-
-            console.log("-------------------------");
-            console.log(ep);
-
-
-
-            console.log("====================================")
-            console.log(ser)
-            //POST series object
-            let apiSeries = "../api/Series";
-            ajaxCall("POST", apiSeries, JSON.stringify(ser), postSeriesSuccessCB, postSeriesErrorCB);
-
-        }
-
-        //Post series Success
-        function postSeriesSuccessCB() {
-            console.log("Breakpoint: SERIES POST SUCCESS")
-            //using POST through ajax call to add the object to the episode list
-            let apiEps = "../api/Episodes";
-            ajaxCall("POST", apiEps, JSON.stringify(ep), postEpsSuccessCB, postEpsErrorCB);
-        }
-
-        //Post series Error
-        function postSeriesErrorCB(err) {
-            console.log(err);
-        }
-
-        //Post Episode Success
-        function postEpsSuccessCB(msg) {
-            if (msg == -1)
-                console.log("episode already exists in sql table therefore wasn't added once again")
-            alert("Episode inserted");
-
-
-        }
-
-
-        //Post Episode Error
-        function postEpsErrorCB(err) {
-            alert(err);
-        }
-
-        //Post Preferences Success
-        function postPrefSuccessCB() {
-            console.log("PREFERENCE SAVED");
-        }
-        function postPrefErrorCB(err) {
-            console.log(err);
-        }
-
-
-
-    </script>
-
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <!--**** Remember to add the database script ***-->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src='https://www.firebase.com/js/libs/idle.js'></script> <!-- idle check -->
+    <script src="../js/config.js"></script>
+    <script src="../js/status.js"></script>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <script src="../js/insert.js"></script>
 </head>
-<body>
-    <!--Navbar-->
-    <ul class="nav nav-pills" id="theHead">
-        <li class="active"><a id="logout" style="background-color:red" href="#">Logout</a></li>
-        <li class="active" id="view"><a href="#">View my episodes</a></li>
-    </ul>
+<!-- BODY -->
+<body id="page-top">
+    <!-- START PAGE SOURCE -->
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg bg-nav text-uppercase fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="#page-top">
+                C-Moo-V
+            </a>
+            <div class="text-secondary" id="welcome" href="#page-top"></div>
 
 
-    <div class="container d-flex align-items-center flex-column">
-
-
-
-        <div id="custom-search-input">
-            <div class="input-group col-md-12 justify-content-center ">
-                <input type="text" id="tvShowName" class="form-control input-lg" placeholder="Search Tv shows" />
-                <span class="input-group-btn">
-                    <button class="btn btn-info btn-lg" id="getTV" type="button">
-                        <i class="glyphicon glyphicon-search"></i>
-                    </button>
-                </span>
+            <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <!-- MENU ITEMS -->
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul id="nav-items-title" class="navbar-nav ms-auto">
+                    <li class="nav-item mx-0 mx-lg-1" id="view"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">View My Episodes</a></li>
+                    <li class="nav-item mx-0 mx-lg-1" id="logout"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">Logout</a></li>
+                </ul>
             </div>
         </div>
-
-
+    </nav>
+    <!-- Masthead-->
+    <header class="masthead bg-dark text-white text-center ">
+        <div class="container d-flex align-items-center flex-column ">
+            <!-- ICON -->
+            <img class="masthead-avatar mb-5" src="https://i.postimg.cc/4NKvmk5M/sacred-cow.png" alt="..." />
+            <!-- Heading-->
+            <h1 class="masthead-heading text-uppercase mb-0">
+                Search a TV show
+            </h1>
+            <!-- SEARCH BAR-->
+            <div class="divider-custom divider-light">
+                <div class="divider-custom-line"></div>
+                <input type="text" id="tvShowName" class="text-dark" />
+                <button id="getTV" class="bg-but">Go!</button>
+                <div class="divider-custom-line"></div>
+            </div>
+        </div>
+    </header>
+    <!-- RENDERING -->
+    <div class="container" id="ph-container">
+        <div id="ph-search"></div>
+        <h1 class="masthead-heading text-uppercase mb-0">
+            RECOMMENDATIONS
+        </h1>
+        <div id="ph0">
+        </div>
+        <h1 class="masthead-heading text-uppercase mb-0">
+            ON AIR TODAY
+        </h1>
+        <div id="ph"><div class="bigger"><h3 class="text-dark text-center"></h3></div></div>
+        <h1 class="masthead-heading text-uppercase mb-0">
+            TOP RATED
+        </h1>
+        <div id="ph1"><div class="bigger"><h3 class="text-dark text-center"></h3></div> </div>
+        <div id="ph-status" class="makeitabstract"></div>
     </div>
-    <div class="container">
-
-        <div id="pic">
-            <br />
-
+    <!-- Footer-->
+    <footer class="footer text-center">
+        <div class="container">
+            <div class="row">
+                <!-- Footer Location-->
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Location</h4>
+                    <p class="lead mb-0">
+                        Ruppin Academic Center
+                        <br />
+                        IL
+                    </p>
+                </div>
+                <!-- Footer Social Icons-->
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Around the Web</h4>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/Ruppin.Academic.Center/" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.instagram.com/ruppin/" target="_blank"><i class="fab fa-fw fa-instagram"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/ruppin/" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
+                </div>
+                <!-- Footer About Text-->
+                <div class="col-lg-4">
+                    <h4 class="text-uppercase mb-4">About C-Moo-V</h4>
+                    <p class="lead mb-0">
+                        C-Moo-V is free to use, Here you can create a list of your favorite episodes!
+                    </p>
+                </div>
+            </div>
         </div>
-        <div id="ph" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
-
-
-
-
-        </div>
-        <div id="ph1" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
-
-
-
-
-        </div>
+    </footer>
+    <!-- Copyright Section-->
+    <div class="copyright py-4 text-center text-white">
+        <div class="container"><small>Copyright &copy; C-Moo-V 2021</small></div>
     </div>
-    
-
-
-
 </body>
 </html>

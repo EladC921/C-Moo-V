@@ -1,92 +1,152 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title> </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>C-Moo-V</title>
 
-    <style type="text/css">
-        #ph > img {
-            height: 300px;
-        }
-
-        .epsOpt {
-            border: black 1px solid;
-            font-size: 1rem;
-            padding: 5px;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-            crossorigin="anonymous">
-    </script>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <script src="../Scripts/ajaxCalls.js"></script>
 
-    <script>
-        $(document).ready(function () {
-            getEpisodes();
-        })
+    <!-- view page css-->
+    <link rel="stylesheet" href="../css/view.css" />
 
-        //call function to episodes list
-        function getEpisodes() {
-            let api = "../api/Series?uId=" + JSON.parse(localStorage.getItem("user")).Id;
-            ajaxCall("GET", api,"", getSerSuccessCB, getSerErrorCB)
-        }
+    <!-- ICON -->
+    <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png" />
 
-        //get episodes - SUCCESS
-        function getSerSuccessCB(seriesList) {
-            let scroll = "";
-            for (var i = 0; i < seriesList.length; i++) {
-                scroll += "<option value='" + seriesList[i].Id + "'>" + seriesList[i].Name + "</option>";
-            }
-            $("#ser").append(scroll);
-        }
+    <!-- Links -->
+    <link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-        function getSerErrorCB(err) {
-            console.log(err);
-        }
-        //get episodes - ERROR
-        function getEpisodesErrorCB(err) {
-            console.log(err);
-        }
-        
 
-        //call function to ajax call of filtered list
-        function renderEpsBySer(opt) {
-            console.log(opt);
-            let api = "../api/Episodes?uId=" + JSON.parse(localStorage.getItem("user")).Id + "&sId=" + opt;
-            ajaxCall("GET", api, "", getEpisodesBySerSuccessCB, getEpisodesBySerErrorCB)
-        }
 
-        //Filtered list of episodes by series name - Success
-        function getEpisodesBySerSuccessCB(eps) {
-            let str = "";
-            for (var i = 0; i < eps.length; i++) {
-                str += "<div class='epsOpt'><p><b>Series Name:</b> " + eps[i].SerName + "</p>";
-                str += "<p><b>Episode Name:</b> " + eps[i].EpName + "</p>";
-                str += "<p><b>Season Number:</b> " + eps[i].SeasonNum + "</p>";
-                str += "<image src=" + eps[i].Img + ">";
-                str += "<p><b>Description:</b> " + eps[i].Description + "</p></div>";
-            }
-            
-            $("#ph").html(str);
-        }
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../css/styles.css" rel="stylesheet" />
 
-        //Filtered list of episodes by series name - ERROR
-        function getEpisodesBySerErrorCB(err) {
-            console.log(err);
-        }
 
-    </script>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="../js/scripts.js"></script>
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <!-- * *                               SB Forms JS                               * *-->
+    <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <!--**** Remember to add the database script ***-->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/status.js"></script>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ /FIRE BASE LINKS AND METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <script src="../js/view.js"></script>
 </head>
-<body>
-    <div id="ph0">
-        <label>Your Series</label>
-        <select name="ser" id="ser" onchange="renderEpsBySer(this.value)">
-            <option value="choose">Choose</option>
-        </select>
+<!-- BODY -->
+<body id="page-top">
+    <!-- START PAGE SOURCE -->
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg bg-nav text-uppercase fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="#page-top">
+                C-Moo-V
+            </a>
+            <div class="text-secondary" id="welcome" href="#page-top"></div>
+
+            <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <!-- MENU ITEMS -->
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul id="nav-items-title" class="navbar-nav ms-auto">
+                    <li class="nav-item mx-0 mx-lg-1" id="view"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">Back to Search</a></li>
+                    <li class="nav-item mx-0 mx-lg-1" id="logout"><a class="nav-link py-3 px-0 px-lg-3 rounded pointer">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Masthead-->
+    <header class="masthead bg-dark text-white text-center ">
+        <div class="container d-flex align-items-center flex-column ">
+            <!-- ICON -->
+            <img class="masthead-avatar mb-5" src="https://i.postimg.cc/4NKvmk5M/sacred-cow.png" alt="..." />
+            <!-- Heading-->
+            <h1 class="masthead-heading text-uppercase mb-0">
+                CHOOSE YOUR TV SHOW
+            </h1>
+            <!-- SELECT BAR-->
+            <div class="divider-custom divider-light text-dark">
+                <div class="divider-custom-line"></div>
+
+                <select name="ser" id="ser" onchange="renderEpsBySer(this.value)">
+                    <option selected value="choose">Choose</option>
+                </select>
+
+                <div class="divider-custom-line"></div>
+            </div>
+        </div>
+    </header>
+    <!-- RENDERING -->
+    <div class="container">
+        <div id="ph"><div class="bigger"><h3 class="text-dark text-center">Choose a TV-Show to Present</h3></div> </div>
+        <div id="ph-status" class="makeitabstract"></div>
     </div>
-    <div id="ph">
+    <!-- Footer-->
+    <footer class="footer text-center">
+        <div class="container">
+            <div class="row">
+                <!-- Footer Location-->
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Location</h4>
+                    <p class="lead mb-0">
+                        Ruppin Academic Center
+                        <br />
+                        IL
+                    </p>
+                </div>
+                <!-- Footer Social Icons-->
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Around the Web</h4>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/Ruppin.Academic.Center/" target="_blank"><i class="fab fa-fw fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.instagram.com/ruppin/" target="_blank"><i class="fab fa-fw fa-instagram"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/ruppin/" target="_blank"><i class="fab fa-fw fa-linkedin-in"></i></a>
+                </div>
+                <!-- Footer About Text-->
+                <div class="col-lg-4">
+                    <h4 class="text-uppercase mb-4">About C-Moo-V</h4>
+                    <p class="lead mb-0">
+                        C-Moo-V is free to use, Here you can create a list of your favorite episodes!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Copyright Section-->
+    <div class="copyright py-4 text-center text-white">
+        <div class="container"><small>Copyright &copy; C-Moo-V 2021</small></div>
     </div>
 </body>
 </html>

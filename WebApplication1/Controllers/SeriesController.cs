@@ -8,19 +8,25 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
+
     public class SeriesController : ApiController
     {
-        // GET api/<controller>
-        public IEnumerable<Serie> Get(int uId)
+        // GET recommendations OR pref of user
+        public IEnumerable<Serie> Get(int uId, string type)
         {
             Serie ser = new Serie();
-            return ser.Get(uId);
-        }
+            return ser.Get(uId, type);
+        }      
+               
+        // GET if user is a fan of series
+        [Route("api/Series/checkPref/{uId}/{sId}")]
+        public int Get(int uId, int sId)
+        {
+            Serie ser = new Serie();
+            return ser.CheckPref(uId, sId);
+        }      
 
-        // GET api/<controller>/5
-      
-
-        // POST api/<controller>
+        // POST Series
         public int Post([FromBody] Serie ser)
         { 
             ser.Insert();

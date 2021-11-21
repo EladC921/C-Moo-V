@@ -9,21 +9,14 @@ namespace WebApplication1.Models
 {
     public class EpisodesController : ApiController
     {
-        // GET api/<controller>
-        //public IEnumerable<Episode> Get()
-        //{
-        //    Episode ep = new Episode();
-        //    return ep.Get();
-        //}
-
-        // GET api/<controller>/5
+        // GET episodes preferences of a user
         public IEnumerable<Episode> Get(int uId, int sId)
         {
             Episode ep = new Episode();
             return ep.Get(uId, sId);
         }
 
-        // POST api/<controller>
+        // POST episode
         public int Post([FromBody] Episode ep)
         {
           return ep.Insert();
@@ -35,9 +28,11 @@ namespace WebApplication1.Models
         {
         }
 
-        // DELETE api/<controller>/5
-        public void Delete(int id)
+        // DELETE episode from user preferences
+        public void Delete(int uId, int eId)
         {
+            Episode ep = new Episode();
+            ep.Remove(uId, eId);
         }
     }
 }

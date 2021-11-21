@@ -26,8 +26,6 @@ namespace WebApplication1.Models
         public float Popularity { get => popularity; set => popularity = value; }
         public string Poster_path { get => poster_path; set => poster_path = value; }
 
-
-
         //Insert series to DB
         public int Insert()
         {
@@ -36,11 +34,18 @@ namespace WebApplication1.Models
             return 1;
         }
 
-        public List<Serie> Get(int uId)
+        //GET recommendations OR series pref of specific user 
+        public List<Serie> Get(int uId, string type)
         {
             DataServices ds = new DataServices();
-            return ds.GetSerPref(uId);
+            return ds.GetSerPref(uId, type);
         }
 
+        //Check if a user is a fan
+        public int CheckPref(int uId, int sId)
+        {
+            DataServices ds = new DataServices();
+            return ds.CheckSerPref(uId, sId);
+        }
     }
 }

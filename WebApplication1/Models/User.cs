@@ -30,6 +30,7 @@ namespace WebApplication1.Models
         public string FavGenre { get => favGenre; set => favGenre = value; }
         public string Address { get => address; set => address = value; }
 
+        //Insert user into DB
         public int Insert()
         {
             DataServices ds = new DataServices();
@@ -38,18 +39,25 @@ namespace WebApplication1.Models
             return numOfEffected;
         }
 
-
+        //Check if login details are correct
         public User Get(string mail, string password)
         {
             DataServices ds = new DataServices();
             return ds.GetU(mail, password);
         }
 
+        //GET users list for 'adminView.html'
         public List<User> GetUList()
         {
             DataServices ds = new DataServices();
             return ds.GetUList();
+        }
 
+        //GET users list for fans list
+        public List<User> GetUList(int sId)
+        {
+            DataServices ds = new DataServices();
+            return ds.GetUList(sId);
         }
     }
 }

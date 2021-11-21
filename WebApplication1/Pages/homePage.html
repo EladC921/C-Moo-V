@@ -2,198 +2,22 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>C-Moo-V</title>
+    <link rel="icon" href="https://media.discordapp.net/attachments/727187267788996640/854969393481646090/sacred-cow.png" />
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> <!--W3Schools css-->
-    <style>
-        /*
-            ************************************************************************************************************************
+    <title>Login Page</title>
+    <!--Made with love by Mutiullah Samim -->
+    <!--Bootsrap 4 CDN-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-        */
-        @import url('https://fonts.googleapis.com/css?family=Numans');
+    <!--Fontawesome CDN-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <!--Custom styles-->
+    <link rel="stylesheet" type="text/css" href="styles.css">
 
-    html, body { background-image: url('https://wallup.net/wp-content/uploads/2016/05/27/19927-Inception.jpg');
-                 background-size: cover;
-                 background-repeat: no-repeat;
-                 height: 100%; font-family: 'Numans', sans-serif; 
+    <!-- home  page css-->
+    <link rel="stylesheet" href="../css/homePage.css" />
 
-    }
-
-        .container {
-            height: 100%;
-            align-content: center;
-        }
-
-        .card {
-            height: 370px;
-            margin-top: auto;
-            margin-bottom: auto;
-            width: 400px;
-            background-color: rgba(0,0,0,0.5) !important;
-        }
-
-    
-       
-        .card-header h3 {
-            color: white;
-        }
-
-        .social_icon {
-            position: absolute;
-            right: 20px;
-            top: -45px;
-        }
-
-        .input-group-prepend span {
-            width: 50px;
-            background-color: #FFC312;
-            color: black;
-            border: 0 !important;
-        }
-
-        input:focus {
-            outline: 0 0 0 0 !important;
-            box-shadow: 0 0 0 0 !important;
-        }
-
-
-
-        .login_btn {
-            color: black;
-            background-color: #FFC312;
-            width: 100px;
-        }
-
-            .login_btn:hover {
-                color: black;
-                background-color: white;
-            }
-
-        .links {
-            color: white;
-        }
-
-            .links a {
-                margin-left: 4px;
-            }
-        /*
-            *************************************************************************************************************************
-        */
-        h5 {
-            padding-top:5px;
-        }
-        body {
-            background-color: lightgreen;
-        }
-
-        #container {
-            color: white; /* White text */
-            padding: 10px 15px;
-        }
-
-        .btns:hover {
-            cursor: pointer; /* Pointer/hand icon */
-            opacity: 0.8;
-        }
-
-        .form-group input {
-            margin-bottom: 5px;
-        }
-
-        tr, td, th {
-            text-align: left;
-            padding: 5px;
-        }
-
-        #register {
-            float: left;
-            border: black solid 1px;
-            padding: 5px;
-        }
-
-        #login {
-            float: left;
-            margin-left: 5px;
-            padding: 5px;
-            border: black solid 1px;
-        }
-
-        .modal {
-            color: black;
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-            padding-top: 60px;
-        }
-
-        /* Modal Content/Box */
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-            border: 1px solid #888;
-            width: 80%; /* Could be more or less, depending on screen size */
-        }
-
-        /* Add Zoom Animation */
-        .animate {
-            -webkit-animation: animatezoom 0.6s;
-            animation: animatezoom 0.6s
-        }
-
-        @-webkit-keyframes animatezoom {
-            from {
-                -webkit-transform: scale(0)
-            }
-
-            to {
-                -webkit-transform: scale(1)
-            }
-        }
-
-        @keyframes animatezoom {
-            from {
-                transform: scale(0)
-            }
-
-            to {
-                transform: scale(1)
-            }
-        }
-
-        /* Change styles for span and cancel button on extra small screens */
-        @media screen and (max-width: 300px) {
-            span.psw {
-                display: block;
-                float: none;
-            }
-
-            .cancelbtn {
-                width: 100%;
-            }
-        }
-
-        /* The Close Button (x) */
-        .close {
-            position: absolute;
-            right: 25px;
-            top: 0;
-            color: #000;
-            font-size: 35px;
-            font-weight: bold;
-        }
-
-            .close:hover,
-            .close:focus {
-                color: red;
-                cursor: pointer;
-            }
-    </style>
     <script src="../Scripts/ajaxCalls.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyC8BnlMZIItlZ_VJRLe4zEYcgTRwr-iE5E"></script>
@@ -202,288 +26,129 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!--new            -------------------------------------------------------------------------------------------------------------------------------->
-    <script>
-
-        // Get the modal
-        var modalRe = document.getElementById('register');
-        var modalLo = document.getElementById('login');
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function (event) {
-            if (event.target == modalRe) {
-                modalRe.style.display = "none";
-            }
-            if (event.target == modalLo) {
-                modalLo.style.display = "none";
-            }
-        }
-
-        $(document).ready(function () {
-            if (localStorage.user != null) { //if a user exists in localStorage upload insert screen
-                user = JSON.parse(localStorage.user);
-                if (user.Mail == "admin@control.tmdb") {
-                    window.location.href = "adminView.html";
-                }
-                else
-                    window.location.href = "insert.html";
-
-            }
-
-            $("#pForm").submit(mySubmit);
-            $("#lForm").submit(myLogin);
-        });
-
-
-        //Submit registration details
-        function mySubmit() {
-            let name = $("#nameTB").val();
-            let sername = $("#sernameTB").val();
-            let mail = $("#mailTB").val();
-            let pass = $("#passTB").val();
-            let phone = $("#phoneTB").val();
-
-            if ($("#male").prop('checked'))
-                gender = 'M';
-            else if ($("#female").prop('checked'))
-                gender = 'F';
-            else gender = 'O';
-
-            let birthYear = $("#birthYearTB").val();
-            let genre = $("#genreTB").val();
-            if (genre == "-1") genre = null;
-            let address = $("#addressTB").val();
-
-            //Creation of user object
-            user = {
-                Name: name,
-                Sername: sername,
-                Mail: mail,
-                Pass: pass,
-                Phone: phone,
-                Gender: gender,
-                BirthYear: birthYear,
-                FavGenre: genre,
-                Address: address
-            }
-
-            console.log(user);
-
-
-
-            //Using POST through ajax call to add the object to the episode list
-            api = "../api/Users"; //global var
-
-            ajaxCall("POST", api, JSON.stringify(user), postUSuccessCB, postUErrorCB);
-
-            return false;
-        }
-
-        //Post user success
-        function postUSuccessCB() {
-            alert("Welcome to our website, " + user.Name + "!");
-            window.location.href = "homePage.html";
-        }
-
-        //Post user error
-        function postUErrorCB(err) {
-            console.log(err);
-            alert(err.responseJSON);
-        }
-
-        //Login button methodge
-        function myLogin() {
-            let mail = $("#mailLogTB").val();
-            let pass = $("#passLogTB").val();
-            api = "../api/Users?mail=" + mail + "&password=" + pass;
-            ajaxCall("GET", api, "", getULoginSuccessCB, getULoginErrorCB);
-            return false;
-        }
-
-        //Login success
-        function getULoginSuccessCB(user) {
-            console.log(user);
-            delete user.Pass;
-            localStorage.user = JSON.stringify(user);
-            if (user.Mail == "admin@control.tmdb") {
-                window.location.href = "adminView.html";
-            }
-            else
-                window.location.href = "insert.html";
-            //add user to localStorage
-        }
-
-        //incorrect details - login failure
-        function getULoginErrorCB(err) {
-            alert(err.responseJSON);
-            $("#passLogTB").val("");
-        }
-
-        //Show password function --> toggle between types - password and text
-        function showPass() {
-            var x = document.getElementById("passTB");
-            if (x.type === "password") {
-                x.type = "text";
-            } else {
-                x.type = "password";
-            }
-        }
-    </script>
-
+    <script src="../js/homePage.js"></script>
 </head>
-</html>
-    <!--new******************************************************************************************************************************************-->
-  
-    <!------ Include the above in your HEAD tag ---------->
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Login Page</title>
-        <!--Made with love by Mutiullah Samim -->
-        <!--Bootsrap 4 CDN-->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-
-        <!--Fontawesome CDN-->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-        <!--Custom styles-->
-        <link rel="stylesheet" type="text/css" href="styles.css">
-    </head>
-    <body>
-        <div class="container">
-            <div class="d-flex justify-content-center h-100">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Sign In</h3>
-
-                    </div>
-                    <div class="card-body">
-                        <form id="lForm">
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                </div>
-
-                                <input pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" type="email" class="form-control" id="mailLogTB" placeholder="Enter email address" required />
-
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-center h-100">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Sign In</h3>
+                </div>
+                <div class="card-body">
+                    <form id="lForm">
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
                             </div>
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-key"></i></span>
-                                </div>
-                                <input type="password" class="form-control" id="passLogTB" placeholder="Enter password" required />
-
-                            </div>
-
-                            <div class="form-group">
-                                <input type="submit" value="Login" class="btn float-right login_btn">
-
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <div class="d-flex justify-content-center links">
-                            <h5>Don't have an account? </h5>    <button onclick="document.getElementById('register').style.display='block'" style="width:auto;background-color:aliceblue" class="btn float-right login_btn">Register</button>
+                            <input pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" type="email" class="form-control" id="mailLogTB" placeholder="Enter email address" required />
                         </div>
-
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            </div>
+                            <input type="password" class="form-control" id="passLogTB" placeholder="Enter password" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Login" class="btn float-right login_btn">
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-center links">
+                        <h5 style='padding-right:5px;'>Don't have an account?</h5>    <button onclick="document.getElementById('register').style.display='block'" style="width:auto;background-color:aliceblue" class="btn float-right login_btn">Register</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="container">
-
-
-            <!-- The Register Modal -->
-            <div class="modal" id="register">
-                <span onclick="document.getElementById('register').style.display='none'"
-                      class="close" title="Close Modal">&times;</span>
-                <form class="modal-content animate" action="" id="pForm">
-                    <h2>Register</h2>
-                    <div class="form-group">
-                        <table>
-                            <tr>
-                                <!-- First Name -->
-                                <th><label for="nameTB">First Name:</label></th>
-                                <td><input type="text" class="form-control" id="nameTB" placeholder="Enter first name" required /></td>
-                            </tr>
-                            <tr>
-                                <!-- Sername -->
-                                <th><label for="sernameTB">Sername:</label></th>
-                                <td><input type="text" class="form-control" id="sernameTB" placeholder="Enter last name" required /></td>
-                            </tr>
-                            <tr>
-                                <!-- Email address -->
-                                <th><label for="mailTB">Email Address:</label></th>
-                                <td><input pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" type="email" class="form-control" id="mailTB" placeholder="Enter email address" required /></td>
-                            </tr>
-                            <tr>
-                                <th><label for="passTB">Password:</label></th>
-                                <td>
-                                    <!-- Password -->
-                                    <input pattern="(?=.*\d)(?=.*[A-Z]).{6,}" type="password" class="form-control" id="passTB" placeholder="Enter password"
-                                           oninvalid="this.setCustomValidity('Password should contain at least one upper case letter and its length must be at least 6 symbols')" oninput="this.setCustomValidity('')" required />
-                                    <!-- An element to toggle between password visibility -->
-                                    <input type="checkbox" onclick="showPass()" />Show Password
-                                </td>
-                            </tr>
-                            <tr>
-                                <!-- Phone number -->
-                                <th><label for="phoneTB">Mobile Number:</label></th>
-                                <td>
-                                    <input pattern="^0\d{2}-\d{7}$" type="tel" class="form-control" id="phoneTB" placeholder="Enter mobile number"
-                                           oninvalid="this.setCustomValidity('format should be: 0dd-ddddddd')" oninput="this.setCustomValidity('')" required />
-                                </td>
-                            </tr>
-                            <tr>
-                                <!-- Gender -->
-                                <th><label for="genderTB">Gender:</label></th>
-                                <td>
-                                    <input type="radio" class="form-control" id="male" name="genderTB" value="male" required>
-                                    <label for="male">Male</label><br>
-                                    <input type="radio" class="form-control" id="female" name="genderTB" value="female">
-                                    <label for="female">Female</label><br>
-                                    <input type="radio" class="form-control" id="other" name="genderTB" value="other">
-                                    <label for="other">Other</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <!-- Birth Year -->
-                                <th><label for="birthYearTB">Year of Birth:</label></th>
-                                <td><input type="number" class="form-control" id="birthYearTB" placeholder="YYYY" min="1900" max="2021" required /></td>
-                            </tr>
-                            <tr>
-                                <!-- Genre -->
-                                <th><label for="genreTB">Favorite Genre:</label></th>
-                                <td>
-                                    <select class="form-control" id="genreTB" name="genreTB">
-                                        <option value="-1">Choose...</option>
-                                        <option>Action</option>
-                                        <option>Comedy</option>
-                                        <option>Drama</option>
-                                        <option>Horror</option>
-                                        <option>Thriller</option>
-                                        <option>Other</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <!-- Address -->
-                                <th>
-                                    <label for="addressTB">Address:</label>
-                                </th>
-                                <td><input type="text" class="form-control" id="addressTB" placeholder="Enter address" required /></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <input type="submit" value="Submit" class="btn float-right login_btn" />
-                </form>
-            </div>
-
-
+    </div>
+    <div id="container">
+        <!-- The Register Modal -->
+        <div class="modal" id="register">
+            <span onclick="document.getElementById('register').style.display='none'"
+                  class="close" title="Close Modal">&times;</span>
+            <form class="modal-content animate" action="" id="pForm">
+                <h2>Register</h2>
+                <div class="form-group form-style">
+                    <table>
+                        <tr>
+                            <!-- First Name -->
+                            <th><label for="nameTB">First Name:</label></th>
+                            <td><input type="text" class="form-control" id="nameTB" placeholder="Enter first name" required /></td>
+                        </tr>
+                        <tr>
+                            <!-- Sername -->
+                            <th><label for="sernameTB">Sername:</label></th>
+                            <td><input type="text" class="form-control" id="sernameTB" placeholder="Enter last name" required /></td>
+                        </tr>
+                        <tr>
+                            <!-- Email address -->
+                            <th><label for="mailTB">Email Address:</label></th>
+                            <td><input pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" type="email" class="form-control" id="mailTB" placeholder="Enter email address" required /></td>
+                        </tr>
+                        <tr>
+                            <th><label for="passTB">Password:</label></th>
+                            <td>
+                                <!-- Password -->
+                                <input pattern="(?=.*\d)(?=.*[A-Z]).{6,}" type="password" class="form-control" id="passTB" placeholder="Enter password"
+                                       oninvalid="this.setCustomValidity('Password should contain at least one upper case letter and its length must be at least 6 symbols')" oninput="this.setCustomValidity('')" required />
+                                <!-- An element to toggle between password visibility -->
+                                <input type="checkbox" onclick="showPass()" />Show Password
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- Phone number -->
+                            <th><label for="phoneTB">Mobile Number:</label></th>
+                            <td>
+                                <input pattern="^0\d{2}-\d{7}$" type="tel" class="form-control" id="phoneTB" placeholder="Enter mobile number"
+                                       oninvalid="this.setCustomValidity('format should be: 0dd-ddddddd')" oninput="this.setCustomValidity('')" required />
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- Gender -->
+                            <th><label for="genderTB">Gender:</label></th>
+                            <td>
+                                <input type="radio" class="form-control" id="male" name="genderTB" value="male" required>
+                                <label for="male">Male</label><br>
+                                <input type="radio" class="form-control" id="female" name="genderTB" value="female">
+                                <label for="female">Female</label><br>
+                                <input type="radio" class="form-control" id="other" name="genderTB" value="other">
+                                <label for="other">Other</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- Birth Year -->
+                            <th><label for="birthYearTB">Year of Birth:</label></th>
+                            <td><input type="number" class="form-control" id="birthYearTB" placeholder="YYYY" min="1900" max="2021" required /></td>
+                        </tr>
+                        <tr>
+                            <!-- Genre -->
+                            <th><label for="genreTB">Favorite Genre:</label></th>
+                            <td>
+                                <select class="form-control" id="genreTB" name="genreTB">
+                                    <option value="-1">Choose...</option>
+                                    <option>Action</option>
+                                    <option>Comedy</option>
+                                    <option>Drama</option>
+                                    <option>Horror</option>
+                                    <option>Thriller</option>
+                                    <option>Other</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- Address -->
+                            <th>
+                                <label for="addressTB">Address:</label>
+                            </th>
+                            <td><input type="text" class="form-control" id="addressTB" placeholder="Enter address" required /></td>
+                        </tr>
+                    </table>
+                </div>
+                <input type="submit" value="Submit" class="btn float-right login_btn" />
+            </form>
         </div>
-    </body>
+    </div>
+</body>
 </html>
 <!--new******************************************************************************************************************************************-->
-
-
-
-
-
