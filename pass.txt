@@ -1,0 +1,14 @@
+ADMIN:
+admin@control.tmdb 
+PASS:
+Admin1
+
+user:
+chen@gmail.com	
+pass:
+A12345
+
+another user:
+yael@gmail.com	
+pass:
+A12345
